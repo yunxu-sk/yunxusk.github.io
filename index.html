@@ -1,0 +1,2920 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050a12">
+<meta name="description" content="长夜档案馆 · 第七号机柜：单文件轻科幻解谜，约 70–82 分钟，离线可玩。">
+<title>长夜档案馆 · 第七号机柜</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%237ff0c1' stroke-width='2' opacity='.55'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%237ff0c1'/%3E%3C/svg%3E">
+<style>
+:root{
+  --void:#03060b; --deep:#050a12; --panel:#0a131d; --panel2:#0d1a26;
+  --hair:rgba(150,222,208,.14); --hair2:rgba(108,192,255,.16);
+  --ph:#7ff0c1; --ph-dim:#4d8f7b; --cy:#6cc0ff; --am:#ffcb6b; --rd:#ff7f6e;
+  --tx:#dcebef; --tx2:#8fa7b4; --tx3:#5b7382;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Cascadia Mono","Courier New",monospace;
+  --sans:"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --serif:"Songti SC","Source Han Serif SC","Noto Serif SC","SimSun",serif;
+  --r:2px;
+  --sh:0 18px 50px -24px rgba(0,0,0,.9);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  background:var(--void); color:var(--tx); font-family:var(--sans);
+  line-height:1.8; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  letter-spacing:.2px;
+}
+::selection{background:rgba(127,240,193,.22);color:#eafff8}
+
+/* 背景层 */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background:
+    radial-gradient(1100px 620px at 78% -12%, rgba(108,192,255,.13), transparent 62%),
+    radial-gradient(900px 540px at 4% 108%, rgba(127,240,193,.07), transparent 60%),
+    radial-gradient(700px 400px at 50% 50%, rgba(70,110,140,.05), transparent 70%),
+    linear-gradient(180deg,#03060b,#061019 46%,#04080f);
+}
+.bg .aur{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;animation:drift 26s ease-in-out infinite}
+.bg .a1{width:520px;height:520px;left:-120px;top:-160px;background:rgba(108,192,255,.16)}
+.bg .a2{width:460px;height:460px;right:-140px;bottom:-180px;background:rgba(127,240,193,.10);animation-delay:-9s}
+@keyframes drift{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(26px,18px,0)}}
+.bg:after{content:"";position:absolute;inset:0;opacity:.4;
+  background-image:linear-gradient(rgba(127,240,193,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(127,240,193,.045) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse at 50% 26%,#000 26%,transparent 76%);
+  -webkit-mask-image:radial-gradient(ellipse at 50% 26%,#000 26%,transparent 76%);}
+.scan{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.22;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.038) 0 1px,transparent 1px 4px)}
+.grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.5'/></svg>");
+}
+
+/* 外壳 */
+.frame{position:relative;z-index:3;max-width:1240px;margin:0 auto;padding:12px clamp(10px,2vw,24px) 56px;
+  display:grid;grid-template-columns:236px minmax(0,1fr);gap:16px;align-items:start}
+.frame.covermode{grid-template-columns:minmax(0,1fr);max-width:1080px}
+.frame.covermode .rail{display:none}
+
+.topbar{grid-column:1/-1;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:9px 14px;border:1px solid var(--hair);
+  background:linear-gradient(180deg,rgba(17,30,42,.86),rgba(7,14,21,.8));
+  border-radius:var(--r);position:sticky;top:8px;z-index:40;
+  backdrop-filter:blur(12px) saturate(120%);box-shadow:0 10px 30px -18px #000}
+.topbar:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ph);
+  box-shadow:0 0 12px 2px rgba(127,240,193,.6);animation:blip 2.6s infinite;flex:none}
+@keyframes blip{0%,100%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
+.brand{font-family:var(--mono);font-size:11px;letter-spacing:2.4px;color:var(--ph);text-transform:uppercase;line-height:1.5}
+.brand small{display:block;font-size:9.5px;letter-spacing:1.4px;color:var(--tx3);text-transform:none;margin-top:2px}
+.spacer{flex:1}
+.progwrap{display:flex;align-items:center;gap:9px}
+.prog{display:flex;gap:3px;align-items:center}
+.prog i{display:block;width:14px;height:3px;background:rgba(255,255,255,.13);border-radius:1px;transition:.35s}
+.prog i.on{background:var(--ph);box-shadow:0 0 8px rgba(127,240,193,.55)}
+.prog i.hid{background:var(--am);box-shadow:0 0 8px rgba(255,203,107,.5)}
+.progwrap .lab{font-family:var(--mono);font-size:9.5px;letter-spacing:1.6px;color:var(--tx3)}
+.node-id{font-family:var(--mono);font-size:10.5px;color:var(--cy);letter-spacing:1.6px;white-space:nowrap}
+.tbtn{font-family:var(--mono);font-size:10.5px;letter-spacing:1.2px;color:var(--tx2);background:rgba(12,22,32,.7);
+  border:1px solid var(--hair);padding:7px 12px;border-radius:var(--r);cursor:pointer;transition:.18s}
+.tbtn:hover{color:var(--ph);border-color:rgba(127,240,193,.45);background:rgba(127,240,193,.07);transform:translateY(-1px)}
+.tbtn:active{transform:translateY(0)}
+.tbtn.on{color:var(--ph);border-color:rgba(127,240,193,.55);background:rgba(127,240,193,.1)}
+.tbtn.off{color:var(--tx3)}
+
+/* 左栏档案柜 */
+.rail{border:1px solid var(--hair);background:linear-gradient(180deg,rgba(11,20,30,.8),rgba(6,11,17,.72));
+  border-radius:var(--r);padding:12px 0 10px;position:sticky;top:64px;box-shadow:var(--sh)}
+.rail-h{font-family:var(--mono);font-size:9.5px;letter-spacing:2.8px;color:var(--tx3);padding:0 14px 10px;
+  border-bottom:1px solid var(--hair);margin-bottom:8px;display:flex;justify-content:space-between}
+.rail-h span{color:var(--ph-dim)}
+.rec{display:flex;gap:11px;align-items:flex-start;padding:10px 14px;cursor:pointer;transition:.18s;
+  border-left:2px solid transparent;position:relative}
+.rec:hover{background:rgba(127,240,193,.045);transform:translateX(2px)}
+.rec.cur{background:linear-gradient(90deg,rgba(127,240,193,.1),transparent);border-left-color:var(--ph)}
+.rec.lk{opacity:.4;cursor:not-allowed}
+.rec.lk:hover{transform:none;background:none}
+.rec .no{font-family:var(--mono);font-size:9.5px;color:var(--tx3);padding-top:2px;min-width:22px;letter-spacing:1px}
+.rec .nm{font-size:13px;color:var(--tx);line-height:1.4;transition:.18s}
+.rec .st{font-family:var(--mono);font-size:8.5px;letter-spacing:1.4px;color:var(--tx3);margin-top:2px}
+.rec.dn .st{color:var(--ph)}
+.rec.dn .nm{color:#bff6e1}
+.rec.dn::after{content:"";position:absolute;right:12px;top:14px;width:4px;height:4px;border-radius:50%;
+  background:var(--ph);box-shadow:0 0 8px rgba(127,240,193,.7)}
+.rec.hid{border-left-color:var(--am)}
+.rec.hid .st{color:var(--am)}
+.rec.hid.dn::after{background:var(--am);box-shadow:0 0 8px rgba(255,203,107,.7)}
+.rail-foot{margin-top:10px;padding:10px 14px 0;border-top:1px solid var(--hair);
+  font-family:var(--mono);font-size:8.5px;color:var(--tx3);letter-spacing:1.2px;line-height:1.9}
+.rail-foot .lampline{margin-top:6px;display:flex;gap:4px}
+.rail-foot .lampline i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.1);transition:.4s}
+.rail-foot .lampline i.on{background:var(--am);box-shadow:0 0 7px rgba(255,203,107,.75)}
+
+/* 主舞台 */
+.stage{min-height:560px;animation:fadein .45s ease both}
+@keyframes fadein{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.panel{border:1px solid var(--hair);background:linear-gradient(180deg,rgba(13,23,33,.94),rgba(7,12,19,.9));
+  border-radius:var(--r);padding:0;overflow:hidden;position:relative;box-shadow:var(--sh)}
+.panel:before,.panel:after{content:"";position:absolute;width:18px;height:18px;border:1px solid rgba(127,240,193,.4);pointer-events:none}
+.panel:before{top:6px;left:6px;border-right:0;border-bottom:0}
+.panel:after{bottom:6px;right:6px;border-left:0;border-top:0}
+.ph-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  padding:18px 20px 14px;border-bottom:1px solid var(--hair);
+  background:linear-gradient(180deg,rgba(255,255,255,.02),transparent)}
+.ph-kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:3px;color:var(--cy);text-transform:uppercase}
+.ph-title{font-size:22px;color:#eaf6f8;letter-spacing:2px;margin-top:5px;font-weight:600}
+.ph-sub{font-size:11.5px;color:var(--tx3);margin-top:3px;letter-spacing:.4px}
+.hero{background:#050a11;border-bottom:1px solid var(--hair);position:relative;overflow:hidden}
+.hero svg{display:block;width:100%;height:auto;position:relative;z-index:1}
+.hero .hero-veil{position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,transparent 58%,rgba(6,12,18,.75));}
+.hero .hero-cap{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:8px 16px;display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:9px;letter-spacing:1.8px;color:rgba(160,200,210,.55);pointer-events:none}
+.body{padding:18px 20px 22px}
+.lede{font-size:14px;color:#d9e9ef;margin:0 0 16px;max-width:76ch;line-height:1.9}
+.lede em{color:var(--am);font-style:normal}
+.lede b{color:var(--ph);font-weight:600}
+.lede .dim{color:var(--tx3);font-size:12.5px}
+
+/* 控件 */
+.sub{font-family:var(--mono);font-size:9.5px;letter-spacing:2px;color:var(--tx3);
+  margin:18px 0 9px;display:flex;align-items:center;gap:10px;text-transform:uppercase}
+.sub:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--hair),transparent)}
+.btn{font-family:var(--mono);font-size:11.5px;letter-spacing:1.4px;padding:10px 18px;border-radius:var(--r);cursor:pointer;
+  border:1px solid var(--hair2);background:linear-gradient(180deg,rgba(108,192,255,.14),rgba(108,192,255,.05));color:#c6e6ff;
+  transition:.18s;position:relative}
+.btn:hover{background:linear-gradient(180deg,rgba(108,192,255,.24),rgba(108,192,255,.08));border-color:var(--cy);
+  box-shadow:0 0 0 1px rgba(108,192,255,.15),0 8px 20px -12px rgba(108,192,255,.6);transform:translateY(-1px)}
+.btn:active{transform:translateY(0) scale(.99)}
+.btn.go{border-color:rgba(127,240,193,.5);background:linear-gradient(180deg,rgba(127,240,193,.18),rgba(127,240,193,.05));color:#c8ffe9}
+.btn.go:hover{background:linear-gradient(180deg,rgba(127,240,193,.3),rgba(127,240,193,.1));border-color:var(--ph);
+  box-shadow:0 0 0 1px rgba(127,240,193,.2),0 10px 26px -14px rgba(127,240,193,.7)}
+.btn:disabled{opacity:.32;cursor:not-allowed;filter:grayscale(.4)}
+.btn.sm{padding:6px 12px;font-size:10.5px;letter-spacing:1px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input[type=text],input[type=number]{font-family:var(--mono);background:rgba(3,8,13,.9);border:1px solid var(--hair);
+  color:var(--ph);padding:10px 13px;border-radius:var(--r);font-size:15px;letter-spacing:3px;outline:none;transition:.18s}
+input[type=text]:focus,input[type=number]:focus{border-color:var(--ph);background:rgba(6,18,20,.9);
+  box-shadow:0 0 0 1px rgba(127,240,193,.18),0 0 24px -10px rgba(127,240,193,.6)}
+input.bad{border-color:var(--rd);animation:sh .32s}
+@keyframes sh{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.note{display:block;font-size:11.5px;color:var(--tx3);line-height:1.7}
+.msg{font-size:11.5px;min-height:18px;margin-top:10px;font-family:var(--mono);letter-spacing:.6px;transition:.2s}
+.msg.e{color:var(--rd)}.msg.s{color:var(--ph)}
+.linkish{color:var(--cy);cursor:pointer;border-bottom:1px dotted var(--cy)}
+.mono{font-family:var(--mono)}
+
+/* 成功条 */
+.done-strip{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;margin-top:18px;
+  border:1px solid rgba(127,240,193,.3);border-radius:var(--r);
+  background:linear-gradient(120deg,rgba(127,240,193,.1),rgba(127,240,193,.02) 60%);
+  animation:pop .5s cubic-bezier(.2,.9,.2,1) both;position:relative;overflow:hidden}
+.done-strip:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(127,240,193,.18),transparent);
+  transform:translateX(-100%);animation:sweep 1.1s .2s ease}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes sweep{to{transform:translateX(100%)}}
+.done-strip .k{font-family:var(--mono);font-size:9.5px;color:var(--ph);letter-spacing:2.2px}
+.done-strip .v{font-size:13px;color:#d9fbef;line-height:1.7}
+.navfoot{display:flex;justify-content:space-between;gap:10px;margin-top:20px;flex-wrap:wrap}
+
+/* 抽屉 */
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(440px,94vw);z-index:60;
+  background:linear-gradient(180deg,#08121b,#050b12);border-left:1px solid var(--hair);
+  transform:translateX(102%);transition:.3s cubic-bezier(.4,0,.2,1);padding:20px 18px;overflow-y:auto;
+  box-shadow:-30px 0 60px -30px #000}
+.drawer.open{transform:none}
+.drawer h3{font-family:var(--mono);font-size:10px;letter-spacing:2.6px;color:var(--ph);margin-bottom:12px}
+.kitem{border:1px solid var(--hair);border-radius:var(--r);padding:10px 12px;margin:9px 0;
+  background:linear-gradient(180deg,rgba(16,28,38,.7),rgba(9,16,23,.5));transition:.2s}
+.kitem:hover{border-color:rgba(127,240,193,.4)}
+.kitem .kk{font-family:var(--mono);font-size:9.5px;letter-spacing:1.6px;color:var(--tx3)}
+.kitem .kv{font-size:15px;color:var(--am);letter-spacing:2px}
+.kitem .kn{font-size:11.5px;color:var(--tx2);margin-top:3px;line-height:1.6}
+.litem{font-size:12px;color:var(--tx2);padding:8px 0;border-bottom:1px dotted rgba(127,240,193,.1);line-height:1.75}
+.litem b{color:var(--cy);font-weight:600}
+.mask{position:fixed;inset:0;background:rgba(2,5,9,.66);z-index:55;display:none;backdrop-filter:blur(3px)}
+.mask.open{display:block}
+#toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(16px);z-index:70;
+  background:linear-gradient(180deg,#0e1c26,#08131c);border:1px solid rgba(127,240,193,.5);color:#bdf6e2;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.8px;padding:10px 18px;border-radius:var(--r);
+  opacity:0;pointer-events:none;transition:.24s;box-shadow:0 12px 30px -14px #000}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+/* 归档仪式 */
+#archFx{position:fixed;inset:0;z-index:65;pointer-events:none;opacity:0}
+#archFx.on{animation:archfade 1.5s ease both}
+#archFx .scrim{position:absolute;inset:0;background:radial-gradient(60% 40% at 50% 46%,rgba(2,6,10,.82),rgba(2,6,10,.45) 60%,transparent 100%)}
+@keyframes archfade{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
+#archFx .bar{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--ph),transparent);
+  box-shadow:0 0 24px 6px rgba(127,240,193,.45);top:0;animation:scanline 1.2s cubic-bezier(.4,0,.2,1) both}
+@keyframes scanline{from{transform:translateY(0)}to{transform:translateY(100vh)}}
+#archFx .tt{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);font-family:var(--mono);
+  font-size:12px;letter-spacing:6px;color:#d7ffee;text-shadow:0 0 20px rgba(127,240,193,.8)}
+#archFx.on .tt{animation:ttin 1.6s ease both}
+@keyframes ttin{0%{opacity:0;letter-spacing:14px}22%{opacity:1;letter-spacing:7px}78%{opacity:1}100%{opacity:0;letter-spacing:5px}}
+
+/* 封面 */
+.cover{text-align:center;padding:4px 0 0}
+.cover-art{border:1px solid var(--hair);border-radius:var(--r);overflow:hidden;background:#03060b;position:relative}
+.cover-t{font-family:var(--mono);font-size:10px;letter-spacing:6px;color:var(--cy);margin:22px 0 10px }
+.cover-h{font-family:var(--serif);font-size:clamp(30px,5vw,46px);letter-spacing:10px;color:#eff9fb;font-weight:600;
+  text-shadow:0 0 40px rgba(127,240,193,.18)}
+.cover-s{font-family:var(--mono);font-size:10.5px;letter-spacing:3px;color:var(--tx3);margin-top:10px}
+.cover-rule{width:44px;height:1px;background:linear-gradient(90deg,transparent,var(--ph),transparent);margin:18px auto 0}
+.cover-p{max-width:60ch;margin:20px auto 0;font-size:14px;color:#cbdde5;text-align:left;line-height:2}
+.boot{margin:20px auto 0;max-width:600px;text-align:left;font-family:var(--mono);font-size:10.5px;
+  color:var(--ph-dim);line-height:2;letter-spacing:.6px}
+.boot div{opacity:0;animation:fadein .7s ease forwards}
+.boot div .ok{color:var(--ph)}
+
+/* 物件台 */
+.desk{border:1px solid var(--hair);background:radial-gradient(ellipse at 50% 0%,rgba(108,192,255,.07),transparent 70%),#060c13;
+  border-radius:var(--r);padding:12px;position:relative;overflow:hidden}
+.desk .tl{position:absolute;left:10px;top:7px;font-family:var(--mono);font-size:8.5px;letter-spacing:1.8px;color:var(--tx3)}
+.desk .tr{position:absolute;right:10px;top:7px;font-family:var(--mono);font-size:8.5px;letter-spacing:1.8px;color:var(--tx3)}
+.chip{display:inline-flex;align-items:center;gap:9px;font-size:12.8px;color:#cde6ee;line-height:1.55;
+  background:linear-gradient(180deg,rgba(16,32,44,.9),rgba(9,18,26,.9));border:1px solid var(--hair2);border-radius:var(--r);
+  padding:9px 12px;cursor:pointer;transition:.16s;max-width:100%;position:relative}
+.chip:hover{border-color:var(--cy);background:linear-gradient(180deg,rgba(108,192,255,.16),rgba(108,192,255,.05));
+  transform:translateY(-1px);box-shadow:0 8px 22px -16px rgba(108,192,255,.8)}
+.chip .num{font-family:var(--mono);font-size:9px;color:var(--tx3)}
+.chip.used{opacity:.22;pointer-events:none}
+.chip .play{width:20px;height:20px;border-radius:50%;border:1px solid var(--hair2);display:grid;place-items:center;
+  font-size:9px;color:var(--cy);background:rgba(108,192,255,.08);flex:none}
+.chip .play:hover{background:rgba(108,192,255,.22)}
+.slot{min-height:48px;border:1px dashed rgba(127,240,193,.24);border-radius:var(--r);padding:8px 11px;cursor:pointer;
+  display:flex;align-items:center;gap:2px;font-size:12.8px;color:var(--tx3);transition:.16s;background:rgba(5,12,18,.6)}
+.slot:hover{border-color:rgba(127,240,193,.4)}
+.slot.on{border-style:solid;border-color:var(--hair2);color:#cde6ee;
+  background:linear-gradient(90deg,rgba(108,192,255,.1),rgba(10,20,28,.9))}
+.slot.cur{border-color:var(--ph);box-shadow:inset 0 0 0 1px rgba(127,240,193,.16),0 0 20px -12px rgba(127,240,193,.7)}
+.slot .mk{font-family:var(--mono);font-size:9.5px;color:var(--ph-dim);margin-right:9px;flex:none}
+
+/* 照片 */
+.photostage{position:relative;border:1px solid #223746;background:#04070b;overflow:hidden;cursor:none;border-radius:var(--r)}
+.photostage svg{display:block;width:100%;height:auto}
+.photoctrl{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+.slider{display:block}
+.slider .lb{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--tx2);letter-spacing:1.2px;margin-bottom:4px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:2px;
+  background:linear-gradient(90deg,rgba(127,240,193,.5),rgba(108,192,255,.5),rgba(255,255,255,.08))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-6px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#9ff8d4,#0b1a22 70%);border:1px solid var(--ph);
+  box-shadow:0 0 10px rgba(127,240,193,.55);transition:.15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type=range]::-moz-range-track{height:3px;background:var(--ph-dim)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#0b1a22;border:1px solid var(--ph)}
+
+/* 元数据表 */
+.meta{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
+.meta td{border-bottom:1px dotted rgba(127,240,193,.12);padding:8px 6px;vertical-align:top}
+.meta td.k{color:var(--tx3);width:32%;letter-spacing:.8px}
+.meta td.v{color:#cbe4eb}
+.meta td.v.bad{color:var(--am)}
+.meta td.v.lock{color:var(--rd);letter-spacing:2px}
+
+/* 十六进制 */
+.hexbox{font-family:var(--mono);font-size:9.5px;line-height:1.62;color:#6fa9a0;background:#04090d;
+  border:1px solid #16323f;overflow:auto;padding:12px 14px;white-space:pre;border-radius:var(--r);height:340px;letter-spacing:.5px}
+.hexbox::-webkit-scrollbar{width:9px;height:9px}
+.hexbox::-webkit-scrollbar-track{background:#04090d}
+.hexbox::-webkit-scrollbar-thumb{background:#25505c;border-radius:5px}
+.hexbox::-webkit-scrollbar-thumb:hover{background:#33707f}
+.tailview{margin:14px 0 6px;border-top:1px dashed #2c505c;padding-top:10px;font-family:var(--mono);
+  font-size:11px;color:#8fc7b8;white-space:normal}
+.tailview .tvh{color:var(--am);letter-spacing:1.6px;font-size:9.5px;margin-bottom:8px}
+.tailview .tvl{line-height:2}
+.tailview .tvl.hl{color:#ffe3ac;background:rgba(255,203,107,.09);display:inline-block;padding:1px 6px}
+.hexbox span[data-off]{cursor:crosshair;transition:background .12s}
+.hexbox span[data-off]:hover{background:rgba(127,240,193,.1)}
+.hexbox span.sel{background:rgba(255,203,107,.2);color:#ffe3ac;box-shadow:inset 2px 0 0 var(--am)}
+.hexbox .hot{color:var(--am)}
+.hexbox .dim{color:#33505b}
+.hexbox .tail{color:#d8f7ea;background:rgba(255,203,107,.09)}
+
+/* 频谱 */
+.specbox{position:relative;background:#03060a;border:1px solid #16323f;border-radius:var(--r);overflow:hidden}
+.specbox canvas{display:block;width:100%;height:auto;cursor:crosshair}
+
+/* 星图 */
+.starbox{position:relative;background:#03060b;border:1px solid #16323f;overflow:hidden;touch-action:none;
+  cursor:grab;border-radius:var(--r)}
+.starbox svg{display:block;width:100%;height:auto}
+.starbox:active{cursor:grabbing}
+
+/* 配线 */
+.patchbox{border:1px solid #16323f;background:#050b11;padding:6px;border-radius:var(--r)}
+.lever{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 12px;border:1px solid var(--hair);
+  border-radius:var(--r);background:linear-gradient(180deg,rgba(16,30,40,.8),rgba(8,15,22,.8));cursor:pointer;transition:.18s;min-width:92px}
+.lever:hover{border-color:var(--cy);transform:translateY(-1px)}
+.lever .gl{font-family:var(--mono);font-size:9px;letter-spacing:1.6px;color:var(--tx3)}
+.lever .track{width:26px;height:34px;border-radius:3px;background:#071219;border:1px solid #1d4250;position:relative}
+.lever .knob{position:absolute;left:2px;right:2px;height:14px;border-radius:2px;
+  background:linear-gradient(180deg,#3a7c8e,#12303c);transition:.26s cubic-bezier(.2,.9,.2,1)}
+.lever .knob.up{bottom:2px}
+.lever .knob.dn{top:2px}
+.lever .st{font-family:var(--mono);font-size:9px;letter-spacing:1px}
+.lever .st.on{color:var(--am)}
+.lever .st.off{color:var(--ph)}
+
+/* 终端 */
+.term{font-family:var(--mono);font-size:11.5px;color:#8fd8c4;background:#040a0e;border:1px solid #16323f;
+  padding:16px;line-height:2;border-radius:var(--r);position:relative;overflow:hidden}
+.term:before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.02) 0 1px,transparent 1px 3px)}
+.term .k{color:var(--tx3)}
+.badge{font-family:var(--mono);font-size:9.5px;letter-spacing:1.8px;padding:4px 10px;border:1px solid;border-radius:var(--r)}
+.badge.ok{color:var(--ph);border-color:rgba(127,240,193,.5);background:rgba(127,240,193,.08)}
+.badge.warn{color:var(--am);border-color:rgba(255,203,107,.5);background:rgba(255,203,107,.07)}
+.badge.no{color:var(--rd);border-color:rgba(255,127,110,.5);background:rgba(255,127,110,.06)}
+
+/* 灯（可发现的隐藏点亮物） */
+.lamp{position:absolute;z-index:4;width:18px;height:18px;border-radius:50%;cursor:pointer;
+  background:radial-gradient(circle,rgba(255,203,107,.22),transparent 68%);
+  border:1px solid rgba(255,203,107,.28);display:grid;place-items:center;transition:.25s}
+.lamp:after{content:"";width:4px;height:4px;border-radius:50%;background:rgba(255,203,107,.5);
+  box-shadow:0 0 8px rgba(255,203,107,.6);animation:blip 3.2s infinite}
+.lamp:hover{border-color:rgba(255,203,107,.7);background:radial-gradient(circle,rgba(255,203,107,.4),transparent 70%)}
+.lamp.on{border-color:transparent;background:radial-gradient(circle,rgba(255,214,140,.95) 0 22%,rgba(255,203,107,.4) 40%,transparent 72%);
+  box-shadow:0 0 26px 8px rgba(255,203,107,.25)}
+.lamp.on:after{width:5px;height:5px;background:#fff4d8;box-shadow:0 0 12px #ffcb6b}
+
+/* 结局 */
+.credits{border-top:1px solid var(--hair);margin-top:22px;padding-top:16px;text-align:center}
+.credits .l1{font-family:var(--serif);font-size:17px;letter-spacing:6px;color:#eaf8f6}
+.credits .l2{font-family:var(--mono);font-size:9.5px;letter-spacing:2.6px;color:var(--tx3);margin-top:8px;line-height:2}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:16px}
+.stat{border:1px solid var(--hair);border-radius:var(--r);padding:10px 12px 12px;background:rgba(10,20,28,.6);
+  text-align:center;position:relative;overflow:hidden}
+.stat .n{display:block;font-family:var(--mono);font-size:19px;color:var(--ph);letter-spacing:1px}
+.stat .l{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:1.6px;color:var(--tx3);margin-top:4px}
+.stat .bar{position:absolute;left:0;bottom:0;height:2px;background:rgba(127,240,193,.55);display:block}
+.stat .bar.am{background:rgba(255,203,107,.6)}
+.stat .bar.cy{background:rgba(89,184,255,.6)}
+
+/* 工具条 */
+.toolbar{display:flex;gap:8px;align-items:center;margin:0 0 10px;flex-wrap:wrap}
+.toolbar input{background:rgba(4,10,14,.9);border:1px solid var(--line);color:var(--tx);font-family:var(--mono);
+  font-size:11.5px;padding:7px 10px;border-radius:var(--r);letter-spacing:1px;outline:none}
+.toolbar input:focus{border-color:var(--ph);box-shadow:0 0 0 2px rgba(127,240,193,.12)}
+.btn.sm.on{border-color:rgba(127,240,193,.6);color:var(--ph);background:rgba(127,240,193,.10)}
+.dim{color:var(--tx3);font-family:var(--mono);font-size:9.5px;letter-spacing:1.6px}
+
+@media(max-width:900px){
+  .frame{grid-template-columns:minmax(0,1fr);gap:10px}
+  .rail{position:static;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:8px;align-items:stretch}
+  .rail-h,.rail-foot{display:none}
+  .rec{flex-direction:column;gap:2px;padding:8px 9px;border:1px solid var(--hair);border-left:1px solid var(--hair);min-width:0}
+  .rec.cur{border-color:var(--ph);border-left-color:var(--ph)}
+  .rec .no{min-width:0}
+  .rec .nm{font-size:12px;line-height:1.3}
+  .rec .st{font-size:8px}
+  .rec.dn::after{display:none}
+  .progwrap{display:flex;order:6;width:100%;justify-content:space-between;gap:6px;padding-top:2px;border-top:1px solid var(--hair);margin-top:2px}
+  .prog i{width:11px}
+  .statgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* ================= v3.1 增补 ================= */
+@media(max-width:430px){
+  .rail{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+  .sigbars{display:none}
+  .ph-title{font-size:23px}
+}
+:root{--hair2:rgba(127,240,193,.16)}
+.panel{border-radius:16px;position:relative;isolation:isolate}
+.panel::before,.panel::after{content:"";position:absolute;width:15px;height:15px;pointer-events:none;z-index:2;
+  border:1px solid var(--hair2);opacity:.9}
+.panel::before{left:9px;top:9px;border-right:0;border-bottom:0;border-top-left-radius:3px}
+.panel::after{right:9px;bottom:9px;border-left:0;border-top:0;border-bottom-right-radius:3px}
+.ph-kicker{position:relative;padding-left:12px}
+.ph-kicker::before{content:"";position:absolute;left:0;top:2px;width:4px;height:10px;background:var(--ph);box-shadow:0 0 10px rgba(127,240,193,.5)}
+.ph-title{text-shadow:0 0 34px rgba(127,240,193,.14)}
+.hero{box-shadow:inset 0 0 60px rgba(0,0,0,.55),0 18px 40px -28px rgba(0,0,0,.9)}
+.btn,.tbtn,.rec,.chip,.lever,.cell{transition:transform .18s cubic-bezier(.2,.6,.2,1),box-shadow .2s,border-color .2s,background .2s}
+.btn:active,.tbtn:active{transform:translateY(1px) scale(.995)}
+.btn:focus-visible,.tbtn:focus-visible,input:focus-visible{outline:2px solid rgba(127,240,193,.6);outline-offset:2px}
+input::placeholder{color:#3f5a68}
+.sigbars{display:flex;gap:3px;align-items:flex-end;height:13px;margin-left:10px}
+.sigbars i{width:2px;background:var(--ph);border-radius:1px;opacity:.45;animation:sig 2.6s ease-in-out infinite}
+@keyframes sig{0%,100%{height:3px;opacity:.25}50%{height:11px;opacity:.85}}
+/* 06-B 冷却回路 */
+.pipebox{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#040a10,#02060a);padding:8px;position:relative}
+.pipebox svg{display:block;width:100%;height:auto}
+.cell{cursor:pointer}
+.cell:hover{background:rgba(127,240,193,.045)}
+.cell.lock{cursor:not-allowed}
+.pw{stroke-dasharray:6 4;animation:flowdash 1.1s linear infinite}
+@keyframes flowdash{to{stroke-dashoffset:-10}}
+.gauge{display:flex;gap:10px;align-items:baseline;font-family:var(--mono);font-size:11px;letter-spacing:1.2px;margin-top:9px;flex-wrap:wrap}
+.gauge .val{font-size:13px}
+.gauge.ok .val{color:var(--ph);text-shadow:0 0 14px rgba(127,240,193,.5)}
+.gauge.warn .val{color:#ff9f93}
+.gauge .note{color:var(--tx3);font-size:10.5px;letter-spacing:.6px}
+.sumline{margin-top:10px;padding:10px 12px;border:1px solid rgba(255,203,107,.35);border-radius:10px;
+  background:rgba(255,203,107,.05);font-family:var(--mono);font-size:12px;letter-spacing:2px;color:#ffe2a8}
+.rec.sub{border-left-color:rgba(255,203,107,.35)}
+.rec.sub .no{color:#e8c07a}
+.rec.sub.cur{border-left-color:var(--am)}
+
+/* ================= v3.2 App 质感 ================= */
+:root{--line:#1d4250}
+html{scroll-behavior:smooth}
+body{overscroll-behavior-y:contain}
+*{ -webkit-tap-highlight-color:transparent }
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#050a10}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#24525e,#163844);border-radius:6px;border:2px solid #050a10}
+::-webkit-scrollbar-thumb:hover{background:#2f6b78}
+
+.topbar{border-radius:14px;backdrop-filter:blur(16px) saturate(130%);
+  background:linear-gradient(180deg,rgba(18,32,44,.88),rgba(8,15,22,.82));
+  box-shadow:0 14px 34px -22px #000, inset 0 1px 0 rgba(255,255,255,.05)}
+.node-id{padding:5px 11px;border:1px solid rgba(108,192,255,.22);border-radius:999px;
+  background:rgba(108,192,255,.07);color:#9fd6ff}
+.lampcount{font-family:var(--mono);font-size:10px;letter-spacing:1.4px;color:var(--am);
+  border:1px solid rgba(255,203,107,.25);background:rgba(255,203,107,.06);border-radius:999px;padding:5px 11px;
+  transition:.3s;white-space:nowrap}
+.lampcount.full{color:#fff0c8;border-color:rgba(255,203,107,.6);box-shadow:0 0 14px rgba(255,203,107,.35)}
+.tbtn{border-radius:999px;padding:7px 14px}
+.prog i{border-radius:3px}
+.prog i.on{animation:segIn .3s ease both}
+@keyframes segIn{from{transform:scaleY(.4);opacity:.3}to{transform:scaleY(1);opacity:1}}
+
+.rail{border-radius:16px;backdrop-filter:blur(12px);
+  background:linear-gradient(180deg,rgba(13,24,34,.84),rgba(7,13,19,.78))}
+.rail-h{padding:12px 16px 10px}
+.rec{border-radius:12px;margin:2px 8px}
+.rec .st{display:inline-block;padding:1px 8px;border-radius:999px;font-size:8.5px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
+.rec.dn .st{color:var(--ph);background:rgba(127,240,193,.08);border-color:rgba(127,240,193,.22)}
+.rec.hid .st{color:var(--am);background:rgba(255,203,107,.08);border-color:rgba(255,203,107,.22)}
+
+.panel{border-radius:18px;background:linear-gradient(180deg,rgba(15,27,38,.92),rgba(8,14,21,.94));
+  backdrop-filter:blur(10px);box-shadow:0 26px 60px -32px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.05);
+  animation:panelIn .42s cubic-bezier(.2,.8,.2,1) both}
+@keyframes panelIn{from{opacity:0;transform:translateY(10px) scale(.996)}to{opacity:1;transform:none}}
+.ph-head{padding:20px 22px 15px}
+.ph-title{font-size:23px;letter-spacing:3px}
+.body{padding:20px 22px 24px}
+.hero{animation:heroIn .55s ease both}
+@keyframes heroIn{from{opacity:0;transform:scale(1.012)}to{opacity:1;transform:none}}
+
+.btn{border-radius:12px;font-weight:600;letter-spacing:1.6px;position:relative;overflow:hidden;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 12px 26px -18px rgba(108,192,255,.8)}
+.btn.go{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 30px -18px rgba(127,240,193,.85)}
+.btn::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;transform:skewX(-18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transition:left .5s ease;pointer-events:none}
+.btn:hover::after{left:120%}
+.btn:disabled::after{display:none}
+.lever:active{transform:translateY(1px) scale(.99)}
+.cell{transition:fill .15s,filter .15s}
+.cell:active{filter:brightness(1.35)}
+.btn.sm{border-radius:10px}
+.btn.primary{padding:14px 32px;font-size:13px;border-radius:14px;letter-spacing:2.4px}
+.chip{border-radius:12px}
+.slot{border-radius:12px}
+.lever{border-radius:14px}
+input[type=text],input[type=number]{border-radius:12px;padding:11px 14px;letter-spacing:4px;
+  background:rgba(3,8,13,.72);box-shadow:inset 0 2px 10px rgba(0,0,0,.45)}
+.toolbar input{border-radius:10px}
+
+.desk,.hexbox,.specbox,.starbox,.patchbox,.pipebox,.term,.photostage{border-radius:14px}
+.term{box-shadow:inset 0 0 30px rgba(0,0,0,.4)}
+.done-strip{border-radius:14px}
+.badge{border-radius:999px;padding:5px 12px}
+.stat{border-radius:14px;transition:transform .2s,border-color .2s}
+.stat:hover{transform:translateY(-2px);border-color:rgba(127,240,193,.3)}
+.kitem{border-radius:12px}
+#toast{border-radius:999px;backdrop-filter:blur(10px)}
+.drawer{border-radius:18px 0 0 18px}
+
+/* 封面 App 标题屏 */
+.cover-t{font-size:11px;letter-spacing:8px;color:#9fd6ff}
+.cover-h{font-size:clamp(34px,6vw,52px);letter-spacing:14px;
+  text-shadow:0 0 44px rgba(127,240,193,.22),0 2px 18px rgba(0,0,0,.6)}
+.cover-s{font-size:11px;letter-spacing:4.5px;color:var(--tx2)}
+.cover-art{border-radius:16px;margin-top:18px;box-shadow:0 30px 70px -34px #000;
+  animation:coverFloat 7s ease-in-out infinite}
+@keyframes coverFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.cover-p{font-size:14.5px;line-height:2.05;color:#c6dae3}
+.boot{border-radius:14px;background:rgba(4,10,15,.55);border:1px solid var(--hair);
+  padding:13px 16px;box-shadow:inset 0 2px 18px rgba(0,0,0,.35)}
+.cover-meta{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.cover-meta span{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;color:var(--tx2);
+  border:1px solid var(--hair);border-radius:999px;padding:5px 12px;background:rgba(10,20,28,.5)}
+.cover-prog{margin-top:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:2px;color:var(--ph)}
+
+@media(max-width:900px){
+  .topbar{border-radius:12px}
+  .rail{border-radius:14px}
+  .panel{border-radius:15px}
+}
+#archFx .ring{position:absolute;left:50%;top:46%;width:120px;height:120px;border:1px solid rgba(127,240,193,.55);
+  border-radius:50%;transform:translate(-50%,-50%) scale(.4);opacity:0;pointer-events:none}
+#archFx.on .ring{animation:ringOut 1.2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes ringOut{0%{opacity:.75;transform:translate(-50%,-50%) scale(.4)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.4)}}
+.boot::after{content:"▍";color:var(--ph);margin-left:5px;animation:caretBlink 1.1s steps(1) infinite}
+@keyframes caretBlink{50%{opacity:0}}
+
+/* ================= v3.3 开场过场 ================= */
+.intro{position:fixed;inset:0;z-index:100;background:#020509;display:grid;place-items:center;
+  opacity:1;transition:opacity .6s ease;pointer-events:auto}
+.intro.done{opacity:0;pointer-events:none}
+.intro-stage{text-align:center;position:relative;padding:0 24px}
+.intro-line{font-family:var(--mono);font-size:11px;letter-spacing:4px;color:var(--tx3);
+  opacity:0;transition:opacity .5s;margin:6px 0}
+.intro-line.on{opacity:1;color:var(--cy)}
+.intro-pulse{position:relative;width:120px;height:120px;margin:26px auto;opacity:0;transition:opacity .5s}
+.intro-pulse.on{opacity:1}
+.intro-pulse span{position:absolute;inset:0;border:1px solid rgba(127,240,193,.5);border-radius:50%;
+  animation:introRing 2.4s ease-out infinite}
+.intro-pulse span:nth-child(2){animation-delay:.8s}
+.intro-pulse span:nth-child(3){animation-delay:1.6s}
+@keyframes introRing{from{transform:scale(.25);opacity:.85}to{transform:scale(1.18);opacity:0}}
+.intro-pulse:after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;
+  background:var(--ph);transform:translate(-50%,-50%);box-shadow:0 0 18px rgba(127,240,193,.8)}
+.intro-title{font-family:var(--serif);font-size:clamp(26px,5vw,38px);letter-spacing:12px;color:#eaf8f6;
+  opacity:0;transform:translateY(8px);transition:opacity .7s,transform .7s;margin-top:18px}
+.intro-title.on{opacity:1;transform:none;text-shadow:0 0 30px rgba(127,240,193,.3)}
+.intro-skip{position:absolute;right:18px;bottom:18px;background:rgba(10,20,28,.5);border:1px solid var(--hair);
+  color:var(--tx3);border-radius:999px;padding:7px 16px;font-family:var(--mono);font-size:10px;letter-spacing:2px;cursor:pointer}
+.intro-skip:hover{color:var(--ph);border-color:rgba(127,240,193,.4)}
+.intro-bar{position:absolute;left:0;right:0;bottom:0;height:2px;background:rgba(255,255,255,.06)}
+.intro-bar i{display:block;height:100%;width:0;background:var(--ph);box-shadow:0 0 12px rgba(127,240,193,.6)}
+.intro-bar i.run{animation:introBar 5.6s linear forwards}
+@keyframes introBar{to{width:100%}}
+
+/* ================= v3.3 彩蛋与值班铃 ================= */
+.beacon-hot{position:absolute;left:55%;top:39%;width:9%;height:12%;border:0;background:transparent;
+  border-radius:50%;cursor:pointer;z-index:5}
+.beacon-hot:hover{background:rgba(255,203,107,.12)}
+#bellMask{position:fixed;inset:0;z-index:74;background:rgba(2,5,9,.6);backdrop-filter:blur(3px);display:none}
+#bellMask.open{display:block}
+.bellmodal{position:fixed;left:50%;top:50%;transform:translate(-50%,-46%);z-index:75;width:min(420px,92vw);
+  background:linear-gradient(180deg,#0d1a26,#07111a);border:1px solid var(--hair);border-radius:18px;
+  padding:18px 18px 16px;box-shadow:0 30px 70px -24px #000;display:none}
+.bellmodal.open{display:block;animation:panelIn .3s ease both}
+.bell-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);
+  font-size:11px;letter-spacing:2.4px;color:var(--ph);margin-bottom:8px}
+.bell-head button{background:none;border:1px solid var(--hair);color:var(--tx2);border-radius:999px;
+  width:26px;height:26px;cursor:pointer}
+.bellmodal .note{font-size:12px;color:var(--tx2);line-height:1.7;margin-bottom:12px}
+.bell-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0}
+.bellkey{height:64px;border-radius:14px;border:1px solid var(--hair2);cursor:pointer;font-family:var(--mono);
+  font-size:11px;letter-spacing:1px;color:#cde6ee;background:linear-gradient(180deg,rgba(16,32,44,.9),rgba(9,18,26,.9));
+  transition:.15s}
+.bellkey:hover{transform:translateY(-2px);border-color:var(--cy)}
+.bellkey.lit{background:rgba(127,240,193,.22);border-color:var(--ph);box-shadow:0 0 18px rgba(127,240,193,.35)}
+.bell-status{font-family:var(--mono);font-size:10.5px;letter-spacing:1.2px;color:var(--tx3);min-height:18px}
+.bell-status.ok{color:var(--ph)}
+.bell-status.bad{color:var(--rd)}
+.egg-row{border:1px solid rgba(255,203,107,.22);border-radius:12px;padding:9px 12px;margin:8px 0;
+  background:rgba(255,203,107,.05)}
+.egg-row .ek{font-family:var(--mono);font-size:9.5px;letter-spacing:1.6px;color:var(--am)}
+.egg-row .en{font-size:12px;color:#ffe2a8;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="bg"><span class="aur a1"></span><span class="aur a2"></span></div><div class="scan"></div><div class="grain"></div>
+<div id="archFx"><div class="scrim"></div><div class="ring"></div><div class="bar"></div><div class="tt">ARCHIVED</div></div>
+
+<div class="intro" id="intro">
+  <div class="intro-stage">
+    <div class="intro-line" id="introL1">ARCH-OS · LONG NIGHT ARCHIVE · NODE 07</div>
+    <div class="intro-pulse" id="introPulse"><span></span><span></span><span></span></div>
+    <div class="intro-line" id="introL2">SIGNAL LOOP · 41.0s · 41 YEARS</div>
+    <div class="intro-title" id="introTitle">长夜档案馆</div>
+  </div>
+  <button class="intro-skip" id="introSkip">跳过 ›</button>
+  <div class="intro-bar"><i id="introBar"></i></div>
+</div>
+
+<div class="frame">
+  <div class="topbar">
+    <div class="brand">LONG NIGHT ARCHIVE<small>长夜档案馆 · 结项审计终端 v3.3</small></div>
+    <div class="sigbars" data-egg="signal" aria-hidden="true"><i style="animation-delay:0s"></i><i style="animation-delay:.18s"></i><i style="animation-delay:.36s"></i><i style="animation-delay:.54s"></i><i style="animation-delay:.72s"></i><i style="animation-delay:.9s"></i><i style="animation-delay:1.08s"></i><i style="animation-delay:1.26s"></i></div>
+    <div class="spacer"></div>
+    <div class="progwrap"><span class="lab">ARCHIVED</span><div class="prog" id="progBar"></div>
+      <span class="lab" id="progLab">0 / 7</span></div>
+    <span class="lampcount" id="lampCount">◆ 0/7</span>
+    <div class="node-id" id="nodeId">NODE 00 / 07</div>
+    <button class="tbtn" id="btnAudio">声 · 开</button>
+    <button class="tbtn" id="btnLog">终端日志</button>
+    <button class="tbtn" id="btnRestart">重开</button>
+  </div>
+  <aside class="rail" id="rail"></aside>
+  <main class="stage" id="stage"></main>
+</div>
+
+<aside class="drawer" id="drawer">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+    <h3 style="margin:0">终端日志 / REGISTRY</h3>
+    <button class="tbtn" id="btnCloseLog">关闭</button>
+  </div>
+  <div id="logKeys"></div>
+  <div class="sub" style="margin-top:14px">已确认事实</div>
+  <div id="logNotes"></div>
+  <div class="sub" style="margin-top:14px">彩蛋发现 · <span id="eggCount">0/5</span></div>
+  <div id="logEggs"></div>
+</aside>
+<div class="mask" id="mask"></div>
+<div id="toast"></div>
+
+<div id="bellMask"></div>
+<div class="bellmodal" id="bellModal" role="dialog" aria-label="值班铃小游戏">
+  <div class="bell-head"><span>值班铃 / WATCH BELL · 可选小游戏</span><button id="bellClose" aria-label="关闭">×</button></div>
+  <p class="note">听一段四音回声，再按相同顺序按下铃键。它不影响主线档案与答案，只是夜班里的一点消遣。</p>
+  <div class="bell-keys" id="bellKeys"></div>
+  <div class="bell-status" id="bellStatus">准备中……</div>
+</div>
+
+<script>
+/* ================= 常量与状态 ================= */
+const VER="ln-archive-3.3";
+const SAVE="ln_save_2";
+
+const RECS=[
+ {id:"R1",no:"01",name:"值班磁带",sub:"录音 · 交接",art:"tape"},
+ {id:"R2",no:"02",name:"屋顶照片",sub:"相片 · 1998",art:"photo"},
+ {id:"R3",no:"03",name:"封存包尾部",sub:"二进制 · 转储",art:"hex"},
+ {id:"R4",no:"04",name:"塔的呼吸",sub:"频谱 · 呼号",art:"spec"},
+ {id:"R5",no:"05",name:"归航星图",sub:"星图 · 环",art:"star"},
+ {id:"R6",no:"06",name:"配线盘",sub:"路由 · 授权",art:"patch"},
+ {id:"R7",no:"07",name:"结项终端",sub:"发送 · 协议",art:"end"}
+];
+const HID={id:"R3B",no:"03-B",name:"黑匣子",sub:"未登记 · 私人物",art:"crate",hid:true};
+const SUB1={id:"R6B",no:"06-B",name:"冷却回路",sub:"冷却 · 校验",art:"pipe",hid:true};
+
+const KEYS={
+  pk:{k:"解析密钥",v:"B7K2",n:"封存包尾部 ASCII 列读出的访问密钥"},
+  bay:{k:"机柜编号",v:"07",n:"值班磁带中报出的机柜号"},
+  year:{k:"封存年份",v:"1998",n:"屋顶照片边角手写日期"},
+  call:{k:"旧呼号",v:"KITE",n:"频谱仪上半频段的呼号"},
+  az:{k:"归航方位",v:"213",n:"星图环对齐后的顶端刻度"},
+  sum:{k:"流量校验码",v:"0719",n:"冷却回路接通后，流量计打印的四位校验码"}
+};
+
+function blank(){return {ver:VER, max:0, done:{}, keys:{}, hints:{}, hidden:false, notes:[], lamps:[], eggs:[], t0:null, cur:-1, seen:false}}
+let S=loadState();
+function loadState(){
+  try{
+    const raw=localStorage.getItem(SAVE); if(!raw) return blank();
+    const o=JSON.parse(raw); if(!o||!o.ver||String(o.ver).indexOf("ln-archive")!==0) return blank();
+    return Object.assign(blank(),o);
+  }catch(e){return blank()}
+}
+function save(){ try{ localStorage.setItem(SAVE,JSON.stringify(S)) }catch(e){} }
+
+/* ================= 工具 ================= */
+const $=id=>document.getElementById(id);
+function el(tag,cls,txt){const e=document.createElement(tag); if(cls)e.className=cls; if(txt!=null)e.textContent=txt; return e}
+function toast(t){const n=$("toast"); n.textContent=t; n.classList.add("show"); clearTimeout(n._t); n._t=setTimeout(()=>n.classList.remove("show"),1900)}
+function rng(seed){let s=seed||7; return function(){s=(s*16807)%2147483647; return s/2147483647}}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"})[c])}
+function note(t){ if(!S.notes.includes(t)){S.notes.push(t)} }
+
+/* ================= 音频引擎（全程序合成，无外部文件） ================= */
+const AU={ctx:null,on:(localStorage.getItem("ln_audio")!=="0"),amb:null,noiseGain:null,tone:null,toneGain:null};
+function auInit(){
+  if(AU.ctx) return AU.ctx;
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null;
+    const c=new AC(); AU.ctx=c;
+    // 环境低鸣
+    const g=c.createGain(); g.gain.value=.0001; g.connect(c.destination);
+    const o1=c.createOscillator(); o1.type="sine"; o1.frequency.value=52;
+    const o2=c.createOscillator(); o2.type="triangle"; o2.frequency.value=104; o2.detune.value=7;
+    const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=360;
+    o1.connect(lp); o2.connect(lp); lp.connect(g); o1.start(); o2.start();
+    g.gain.exponentialRampToValueAtTime(AU.on?.011:.0001, c.currentTime+2.4);
+    AU.amb=g;
+    // 磁带/通风噪声床
+    const buf=c.createBuffer(1,Math.floor(c.sampleRate*2),c.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*.45;
+    const ns=c.createBufferSource(); ns.buffer=buf; ns.loop=true;
+    const nf=c.createBiquadFilter(); nf.type="bandpass"; nf.frequency.value=640; nf.Q.value=.8;
+    const ng=c.createGain(); ng.gain.value=.0001; ns.connect(nf); nf.connect(ng); ng.connect(c.destination);
+    ns.start();
+    ng.gain.exponentialRampToValueAtTime(AU.on?.003:.0001, c.currentTime+2.4);
+    AU.noiseGain=ng; AU.noiseSource=ns;
+    // 调谐音（常驻正弦，增益随锁定变化）
+    const t=c.createOscillator(); t.type="sine"; t.frequency.value=520;
+    const tg=c.createGain(); tg.gain.value=0; t.connect(tg); tg.connect(c.destination); t.start();
+    AU.tone=t; AU.toneGain=tg;
+  }catch(e){ AU.ctx=null }
+  return AU.ctx;
+}
+function auWake(){ if(!AU.on) return; const c=auInit(); if(c&&c.state==="suspended"){ try{c.resume()}catch(e){} } }
+function beep(f,dur,type,vol,delay){
+  if(!AU.on||!AU.ctx) return; const c=AU.ctx;
+  try{
+    const t0=c.currentTime+(delay||0);
+    const o=c.createOscillator(); o.type=type||"sine"; o.frequency.setValueAtTime(f,t0);
+    const g=c.createGain(); g.gain.setValueAtTime(0,t0);
+    g.gain.linearRampToValueAtTime(vol||.06,t0+.008);
+    g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
+    o.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0+dur+.02);
+  }catch(e){}
+}
+const SND={
+  click:()=>beep(760,.05,"triangle",.05),
+  hover:()=>beep(1180,.03,"sine",.018),
+  tick:()=>beep(1500,.02,"square",.02),
+  ok:()=>{ beep(523,.16,"sine",.07,0); beep(659,.18,"sine",.06,.11); beep(784,.3,"sine",.07,.24) },
+  err:()=>{ beep(190,.2,"square",.05,0); beep(140,.26,"square",.04,.09) },
+  relay:()=>{ beep(120,.09,"square",.07,0); beep(340,.05,"triangle",.03,.05) },
+  tape:()=>{ beep(300,.5,"sawtooth",.015,0) },
+  chime:()=>{ beep(880,.5,"sine",.05,0); beep(1320,.6,"sine",.03,.2) }
+};
+function auTone(freq,amp){
+  if(!AU.on||!AU.toneGain) return;
+  const c=AU.ctx; if(!c) return;
+  try{ AU.tone.frequency.setTargetAtTime(freq,c.currentTime,.12);
+       AU.toneGain.gain.setTargetAtTime(amp,c.currentTime,.1) }catch(e){}
+}
+function auMute(on){
+  AU.on=on; try{localStorage.setItem("ln_audio",on?"1":"0")}catch(e){}
+  const c=AU.ctx;
+  if(c){
+    try{
+      const t=c.currentTime;
+      if(AU.amb) AU.amb.gain.setTargetAtTime(on?.011:.0001,t,.3);
+      if(AU.noiseGain) AU.noiseGain.gain.setTargetAtTime(on?.003:.0001,t,.3);
+      if(AU.toneGain&&!on) AU.toneGain.gain.setTargetAtTime(0,t,.2);
+    }catch(e){}
+  }
+  const b=$("btnAudio"); if(b){ b.textContent=on?"声 · 开":"声 · 关"; b.classList.toggle("off",!on) }
+}
+
+/* ================= v3.3 彩蛋（无阻断，不影响主线真值与门禁） ================= */
+const EGG_DEFS={
+  beacon:{name:"值班窗",n:"封面卫星上唯一亮着的窗，被你点了三次"},
+  signal:{name:"循环信号",n:"顶栏信号条被你连点五次"},
+  weld:{name:"焊死的格",n:"06-B 里焊死的格子，其实也有温度"},
+  earth:{name:"蓝色弹珠",n:"结局页那颗收信的星球"},
+  bell:{name:"铃音校准",n:"值班铃的四音回声被你完整复现"}
+};
+const eggHits={};
+function unlockEgg(id){
+  if(S.eggs.includes(id)) return false;
+  S.eggs.push(id); save(); SND.chime();
+  const def=EGG_DEFS[id];
+  toast("彩蛋发现 · "+def.name+"（"+S.eggs.length+"/"+Object.keys(EGG_DEFS).length+"）");
+  return true;
+}
+function pokeEgg(id){
+  const need={beacon:3,signal:5,weld:3}[id]||1;
+  eggHits[id]=(eggHits[id]||0)+1;
+  if(eggHits[id]>=need) unlockEgg(id);
+}
+document.addEventListener("click",e=>{
+  const t=e.target&&e.target.closest?e.target.closest("[data-egg]"):null;
+  if(t) pokeEgg(t.dataset.egg);
+});
+
+/* ================= v3.3 开场过场（可跳过） ================= */
+let introTimers=[];
+function finishIntro(){
+  introTimers.forEach(clearTimeout); introTimers=[];
+  const el=$("intro"); if(!el) return;
+  el.classList.add("done");
+  try{ localStorage.setItem("ln_intro","1") }catch(e){}
+}
+function runIntro(){
+  const el=$("intro"); if(!el) return;
+  try{ if(localStorage.getItem("ln_intro")==="1"){ el.classList.add("done"); return } }catch(e){}
+  el.classList.remove("done");
+  const bar=$("introBar"); bar.classList.remove("run"); void bar.offsetWidth; bar.classList.add("run");
+  introTimers.push(setTimeout(()=>$("introL1").classList.add("on"),350));
+  introTimers.push(setTimeout(()=>{ $("introPulse").classList.add("on"); $("introL2").classList.add("on"); SND.hover(); },1700));
+  introTimers.push(setTimeout(()=>$("introTitle").classList.add("on"),3700));
+  introTimers.push(setTimeout(finishIntro,5600));
+  $("introSkip").onclick=e=>{ e.stopPropagation(); finishIntro() };
+  el.addEventListener("click",()=>finishIntro(),{once:true});
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") finishIntro() });
+}
+
+/* ================= v3.3 值班铃（可选回声小游戏，不影响主线） ================= */
+const BELL_NOTES=[{label:"DO",f:523.25},{label:"MI",f:659.25},{label:"SOL",f:783.99},{label:"LA",f:880.00}];
+const BELL_SEQ=[0,2,1,3];
+let bellInput=[],bellBusy=false;
+function bellTone(i){ beep(BELL_NOTES[i].f,.28,"sine",.08,0) }
+function bellFlash(i){ const k=$("bellKeys").children[i]; if(!k) return; k.classList.add("lit"); setTimeout(()=>k.classList.remove("lit"),360) }
+function buildBellKeys(){
+  const box=$("bellKeys"); box.innerHTML="";
+  BELL_NOTES.forEach((n,i)=>{
+    const b=el("button","bellkey",n.label);
+    b.addEventListener("click",()=>{
+      bellTone(i); bellFlash(i);
+      if(bellBusy) return;
+      bellInput.push(i);
+      if(i!==BELL_SEQ[bellInput.length-1]){
+        const st=$("bellStatus"); st.className="bell-status bad"; st.textContent="顺序不对，再听一次。";
+        SND.err(); bellInput=[]; bellBusy=true;
+        setTimeout(()=>playBellSeq(()=>{bellBusy=false;st.className="bell-status";st.textContent="轮到你：按刚才的顺序按下铃键。";}),750);
+        return;
+      }
+      if(bellInput.length===BELL_SEQ.length){
+        const st=$("bellStatus"); st.className="bell-status ok"; st.textContent="回声对齐 · 铃音校准完成。";
+        unlockEgg("bell"); SND.ok(); setTimeout(bellClose,1100);
+      }
+    });
+    box.appendChild(b);
+  });
+}
+function playBellSeq(done){
+  bellBusy=true; let k=0;
+  const step=()=>{
+    if(k>=BELL_SEQ.length){ bellBusy=false; if(done) done(); return }
+    bellTone(BELL_SEQ[k]); bellFlash(BELL_SEQ[k]); k++; setTimeout(step,520);
+  };
+  step();
+}
+function bellOpen(){
+  $("bellMask").classList.add("open"); $("bellModal").classList.add("open");
+  bellInput=[]; bellBusy=true;
+  const st=$("bellStatus"); st.className="bell-status"; st.textContent="听旋律……";
+  buildBellKeys();
+  playBellSeq(()=>{ bellBusy=false; st.textContent="轮到你：按刚才的顺序按下铃键。"; });
+}
+function bellClose(){ $("bellMask").classList.remove("open"); $("bellModal").classList.remove("open"); bellInput=[]; bellBusy=false }
+
+/* ================= 灯（每份档案藏一盏，点亮即收集） ================= */
+function lampAt(parent,key,pos){
+  const d=el("div","lamp"); d.title="这里有一点光。";
+  d.style.cssText=Object.keys(pos).map(k=>k+":"+pos[k]).join(";");
+  const on=()=>{ if(S.lamps.includes(key)) return;
+    S.lamps.push(key); save(); d.classList.add("on"); SND.chime();
+    const n=S.lamps.length;
+    toast("第 "+n+" 盏灯亮起 · "+n+"/7");
+    renderProg();
+  };
+  if(S.lamps.includes(key)) d.classList.add("on");
+  d.addEventListener("click",e=>{ e.stopPropagation(); on() });
+  parent.appendChild(d);
+  return d;
+}
+
+/* ================= 归档仪式 / 进度 ================= */
+function archivedFx(){
+  const fx=$("archFx"); if(!fx) return;
+  const tt=fx.querySelector(".tt"); if(tt) tt.textContent="ARCHIVED";
+  fx.classList.remove("on"); void fx.offsetWidth; fx.classList.add("on");
+  SND.ok();
+}
+/* 发送/转场仪式：全屏扫描 → 回调 */
+function transmitFx(label,next){
+  const fx=$("archFx");
+  if(!fx){ next(); return }
+  const tt=fx.querySelector(".tt"); if(tt) tt.textContent=label;
+  fx.classList.remove("on"); void fx.offsetWidth; fx.classList.add("on");
+  SND.ok();
+  setTimeout(()=>{ try{next()}catch(e){} },2500);
+}
+function renderProg(){
+  const bar=$("progBar"); if(!bar) return;
+  bar.innerHTML="";
+  RECS.forEach(r=>{ const i=document.createElement("i"); if(S.done[r.id]) i.classList.add("on"); bar.appendChild(i) });
+  [HID,SUB1].forEach(h=>{ const i=document.createElement("i"); if(S.done[h.id]) i.classList.add("hid"); bar.appendChild(i) });
+  const n=RECS.filter(r=>S.done[r.id]).length;
+  const extra=[HID,SUB1].filter(h=>S.done[h.id]).length;
+  const lb=$("progLab"); if(lb) lb.textContent=n+" / 7"+(extra?" +"+extra:"");
+  const lc=$("lampCount"); if(lc){ lc.textContent="◆ "+S.lamps.length+"/7"; lc.classList.toggle("full",S.lamps.length>=7) }
+}
+
+
+/* 状态推进 */
+function unlockNext(id){
+  const i=RECS.findIndex(r=>r.id===id);
+  if(i>=0 && S.max < i+1) S.max=i+1;
+}
+function solve(id,opt){
+  opt=opt||{};
+  if(S.done[id]) return false;
+  S.done[id]=true;
+  if(!S.t0) S.t0=Date.now();
+  if(opt.keys) Object.keys(opt.keys).forEach(k=>{S.keys[k]=opt.keys[k]});
+  if(opt.note) note(opt.note);
+  if(opt.hidden) S.hidden=true;
+  unlockNext(id);
+  save();
+  if(opt.idx!=null) S.cur=opt.idx;
+  renderRail(); renderNode(); renderProg();
+  archivedFx();
+  return true;
+}
+const GATE={
+  R1:()=>true,
+  R2:()=>true,
+  R3:()=>!!S.done.R1,
+  R4:()=>!!S.done.R3,
+  R5:()=>!!S.done.R4,
+  R6:()=>!!S.done.R4,
+  R6B:()=>!!(S.done.R5||S.done.R6),
+  R7:()=>!!S.done.R6B
+};
+function accessible(i){
+  const rec=RECS[i]; if(!rec) return false;
+  const g=GATE[rec.id]; return g?g():false;
+}
+function renderRail(){
+  const r=$("rail"); r.innerHTML="";
+  const hd=el("div","rail-h");
+  hd.innerHTML=`<span>档案柜 / RECORDS</span><span>${RECS.filter(x=>S.done[x.id]).length}/7</span>`;
+  r.appendChild(hd);
+  RECS.forEach((rec,i)=>{
+    const ok=accessible(i), dn=!!S.done[rec.id];
+    const d=el("div","rec");
+    if(!ok) d.classList.add("lk");
+    if(S.cur===i) d.classList.add("cur");
+    if(dn) d.classList.add("dn");
+    d.innerHTML=`<div class="no">${rec.no}</div><div><div class="nm">${rec.name}</div>
+      <div class="st">${dn?"已归档":(ok?"待核对":"未解锁")}</div></div>`;
+    if(ok) d.addEventListener("mouseenter",()=>SND.hover());
+    d.addEventListener("click",()=>{ if(ok) open(i); else toast("该档案尚未解锁：先完成上一份。") });
+    r.appendChild(d);
+  });
+  if(S.hidden){
+    const d=el("div","rec hid"); if(S.cur===-2) d.classList.add("cur");
+    if(S.done[HID.id]) d.classList.add("dn");
+    d.innerHTML=`<div class="no">${HID.no}</div><div><div class="nm">${HID.name}</div>
+      <div class="st">${S.done[HID.id]?"已抄录":"未登记"}</div></div>`;
+    d.addEventListener("mouseenter",()=>SND.hover());
+    d.addEventListener("click",()=>open(-2));
+    r.appendChild(d);
+  }
+  if(GATE.R6B()){
+    const d=el("div","rec sub"); if(S.cur===-4) d.classList.add("cur");
+    if(S.done[SUB1.id]) d.classList.add("dn");
+    d.innerHTML=`<div class="no">${SUB1.no}</div><div><div class="nm">${SUB1.name}</div>
+      <div class="st">${S.done[SUB1.id]?"已归档":"待接通"}</div></div>`;
+    d.addEventListener("mouseenter",()=>SND.hover());
+    d.addEventListener("click",()=>open(-4));
+    r.appendChild(d);
+  }
+  const f=el("div","rail-foot");
+  const lamps="";
+  f.innerHTML=`SHELL: ARCH-OS 3.0<br>UPTIME 41y 02m<br>LISTENER: 1
+    <div class="lampline">${Array.from({length:7}).map((_,i)=>`<i class="${S.lamps.length>i?'on':''}"></i>`).join("")}</div>`;
+  r.appendChild(f);
+  renderProg();
+}
+function renderNode(){
+  const cur=S.cur;
+  const fr=document.querySelector(".frame"); if(fr) fr.classList.toggle("covermode", cur===-3);
+  let rec=null;
+  if(cur===-2) rec=HID;
+  else if(cur===-4) rec=SUB1;
+  else if(cur>=0) rec=RECS[cur];
+  $("nodeId").textContent=rec?`NODE ${rec.no} / 07 · ${rec.name}`:"NODE -- / 07 · 待机";
+}
+function open(i){
+  auTone(0,0);
+  S.cur=i; save(); renderRail(); renderNode();
+  const st=$("stage"); st.innerHTML="";
+  try{ window.scrollTo({top:0,behavior:"instant"}) }catch(e){ window.scrollTo(0,0) }
+  if(i===-2) return M_crate(st);
+  if(i===-4) return M.R6B(st);
+  if(i===-3) return M_cover();
+  return M[RECS[i].id](st);
+}
+function next(i){ if(i+1<RECS.length) open(i+1); }
+
+/* ================= 插图（内联 SVG） ================= */
+function svgWrap(inner,vb){
+  let v=vb||"0 0 720 360";
+  if(/^[\d.]+\s+[\d.]+$/.test(v)) v="0 0 "+v;
+  return `<svg viewBox="${v}" preserveAspectRatio="xMidYMid meet">${inner}</svg>`;
+}
+function starsLayer(n,seed,w,h){
+  const r=rng(seed); let out="";
+  for(let i=0;i<n;i++){
+    const x=r()*w, y=r()*h, s=.6+r()*1.6, o=.25+r()*.7;
+    out+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${s.toFixed(1)}" fill="#cfe6f2" opacity="${o.toFixed(2)}"/>`;
+  }
+  return out;
+}
+function planetArc(cx,cy,r,fills){
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#${fills})"/>`;
+}
+function artCover(){
+  const W=900,H=430;
+  const r=rng(1207);
+  let dust="";
+  for(let i=0;i<160;i++){ const x=r()*W,y=r()*H*0.85,s=.4+r()*1.5,o=.18+r()*.6;
+    dust+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${s.toFixed(2)}" fill="#d7ecf6" opacity="${o.toFixed(2)}"/>`; }
+  return svgWrap(`
+  <defs>
+    <radialGradient id="cvSky" cx="62%" cy="26%" r="78%"><stop offset="0" stop-color="#0d2b42"/><stop offset=".55" stop-color="#061321"/><stop offset="1" stop-color="#03070d"/></radialGradient>
+    <linearGradient id="cvEarth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a6d7c"/><stop offset=".35" stop-color="#14414f"/><stop offset="1" stop-color="#071a24"/></linearGradient>
+    <linearGradient id="cvHull" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d3546"/><stop offset="1" stop-color="#0a1722"/></linearGradient>
+    <linearGradient id="cvBeam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ff0c1" stop-opacity=".30"/><stop offset="1" stop-color="#7ff0c1" stop-opacity="0"/></linearGradient>
+    <radialGradient id="cvWin" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffd79a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd79a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="cvVig" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>
+  </defs>
+  <rect width="${W}" height="${H}" fill="url(#cvSky)"/>
+  ${dust}
+  <!-- 地球边缘 -->
+  <circle cx="620" cy="760" r="470" fill="url(#cvEarth)" opacity=".92"/>
+  <circle cx="620" cy="760" r="470" fill="none" stroke="#6fd6c0" stroke-width="1.2" opacity=".5"/>
+  <circle cx="620" cy="760" r="479" fill="none" stroke="#a8f3e0" stroke-width=".6" opacity=".28"/>
+  <path d="M150,404 C330,362 470,352 620,342 C740,334 830,330 900,318" stroke="#9be8d4" stroke-width="1"
+     fill="none" opacity=".35"/>
+  <!-- 高空云带 -->
+  <g opacity=".22">
+    <path d="M250,330 C330,318 420,326 500,318 C560,312 610,316 660,310" stroke="#c6f0ea" stroke-width="6" fill="none" filter="blur(3px)"/>
+    <path d="M330,364 C410,352 470,358 540,350" stroke="#c6f0ea" stroke-width="4" fill="none" filter="blur(2px)"/>
+  </g>
+  <!-- 空间站主体 -->
+  <g transform="translate(392,206)">
+    <!-- 主桁架 -->
+    <rect x="-150" y="-7" width="300" height="14" rx="2" fill="url(#cvHull)" stroke="#35627a" stroke-width="1"/>
+    <rect x="-150" y="-7" width="300" height="3" fill="#7ff0c1" opacity=".18"/>
+    <!-- 舱段 -->
+    <rect x="-70" y="-34" width="118" height="52" rx="4" fill="url(#cvHull)" stroke="#3b6d85"/>
+    <rect x="52" y="-26" width="72" height="40" rx="3" fill="#102532" stroke="#35627a"/>
+    <rect x="-132" y="-20" width="58" height="34" rx="3" fill="#122835" stroke="#2d5568"/>
+    <!-- 太阳能板 -->
+    <g opacity=".9">
+      <rect x="-236" y="-52" width="96" height="36" fill="#0b2231" stroke="#2f6d80"/>
+      <g stroke="#1e5266" stroke-width="1">${[0,1,2,3].map(i=>`<line x1="${-236+i*24}" y1="-52" x2="${-236+i*24}" y2="-16"/>`).join("")}</g>
+      <rect x="-236" y="-52" width="96" height="36" fill="#6fd6c0" opacity=".06"/>
+      <rect x="128" y="-64" width="104" height="40" fill="#0b2231" stroke="#2f6d80"/>
+      <g stroke="#1e5266" stroke-width="1">${[0,1,2,3].map(i=>`<line x1="${128+i*26}" y1="-64" x2="${128+i*26}" y2="-24"/>`).join("")}</g>
+      <rect x="128" y="-64" width="104" height="40" fill="#6fd6c0" opacity=".06"/>
+    </g>
+    <!-- 桁架细节 -->
+    <g stroke="#2b4f61" stroke-width="1" opacity=".8">${[-120,-84,-30,40,96,124].map(x=>`<line x1="${x}" y1="-7" x2="${x}" y2="7"/>`).join("")}</g>
+    <!-- 唯一亮着的窗 -->
+    <rect x="-30" y="-16" width="34" height="20" rx="2" fill="#0a1620" stroke="#436d7f"/>
+    <rect x="-26" y="-12" width="26" height="12" fill="#ffcb6b" opacity=".55"/>
+    <circle cx="-13" cy="-6" r="26" fill="url(#cvWin)"/>
+    <text x="-13" y="-2.5" text-anchor="middle" font-family="monospace" font-size="6" fill="#ffe9be" opacity=".9">07</text>
+    <!-- 天线 -->
+    <path d="M96,-26 L96,-86" stroke="#3b6d85" stroke-width="2"/>
+    <path d="M74,-86 A24,24 0 0 1 118,-86" stroke="#93c0cf" stroke-width="1.6" fill="none" opacity=".8"/>
+    <line x1="96" y1="-86" x2="96" y2="-58" stroke="#93c0cf" stroke-width="1" opacity=".55"/>
+    <circle cx="96" cy="-88" r="2.6" fill="#ffcb6b"/>
+    <circle cx="96" cy="-88" r="10" fill="#ffcb6b" opacity=".12"/>
+    <!-- 下行信号 -->
+    <path d="M96,-80 L142,180 L50,180 Z" fill="url(#cvBeam)" opacity=".55"/>
+    <circle cx="96" cy="-78" r="1.5" fill="#a9ffe2"/>
+    <g font-family="monospace" font-size="7" fill="#7ff0c1" opacity=".5">
+      <text x="104" y="20">41s LOOP</text>
+    </g>
+    <!-- 姿态推进器 -->
+    <g fill="#0f2431" stroke="#2d5568">
+      <rect x="-88" y="18" width="12" height="12" rx="1"/><rect x="86" y="14" width="10" height="10" rx="1"/>
+    </g>
+    <!-- 微光 -->
+    <rect x="-70" y="30" width="118" height="2" fill="#7ff0c1" opacity=".16"/>
+  </g>
+  <!-- 脉冲环 -->
+  <g opacity=".35">
+    <circle cx="488" cy="118" r="46" fill="none" stroke="#7ff0c1" stroke-width=".8" opacity=".5"/>
+    <circle cx="488" cy="118" r="72" fill="none" stroke="#7ff0c1" stroke-width=".6" opacity=".26"/>
+    <circle cx="488" cy="118" r="100" fill="none" stroke="#7ff0c1" stroke-width=".5" opacity=".14"/>
+  </g>
+  <rect width="${W}" height="${H}" fill="url(#cvVig)"/>
+  <g font-family="monospace" font-size="8.5" fill="#5c8496" opacity=".75">
+    <text x="20" y="26">ARCH-OS 3.0 // 静默轨道</text>
+    <text x="20" y="40" opacity=".6">LAT 31.2N LON 121.4E ALT 412 KM · CREW 0 · LISTENER 1</text>
+    <text x="880" y="414" text-anchor="end">SIG ▍▍▍▍▍▍▍▍</text>
+  </g>`,W+" "+H);
+}
+function artTape(){
+  return svgWrap(`
+  <defs><linearGradient id="tapeBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b2b38"/><stop offset="1" stop-color="#0b141d"/></linearGradient>
+  <radialGradient id="tapeBg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#0d2233"/><stop offset="1" stop-color="#050a11"/></radialGradient></defs>
+  <rect width="720" height="360" fill="url(#tapeBg)"/>
+  ${starsLayer(40,21,720,300)}
+  <g transform="translate(360,196)">
+    <rect x="-190" y="-110" width="380" height="220" rx="8" fill="url(#tapeBody)" stroke="#3d7f96" stroke-width="1.2"/>
+    <rect x="-170" y="-92" width="340" height="92" rx="4" fill="#e8e2d2" opacity=".93"/>
+    <text x="-150" y="-64" font-family="monospace" font-size="11" fill="#243038">长夜档案馆 · 值班交接</text>
+    <text x="-150" y="-46" font-family="monospace" font-size="9" fill="#5b6b73">TAPE 07 / 41Y / HANDOVER</text>
+    <text x="-150" y="-22" font-family="monospace" font-size="9" fill="#5b6b73">▢ 磁头校准 ▢ 干线音频 ▢ 手动</text>
+    <g opacity=".95">
+      <circle cx="-96" cy="46" r="36" fill="#0b141d" stroke="#2f6b80" stroke-width="1"/>
+      <circle cx="-96" cy="46" r="27" fill="#1b2b38"/>
+      <circle cx="-96" cy="46" r="13" fill="#0b141d" stroke="#3d7f96"/>
+      <circle cx="96" cy="46" r="36" fill="#0b141d" stroke="#2f6b80" stroke-width="1"/>
+      <circle cx="96" cy="46" r="27" fill="#1b2b38"/>
+      <circle cx="96" cy="46" r="13" fill="#0b141d" stroke="#3d7f96"/>
+      <rect x="-56" y="34" width="112" height="22" rx="2" fill="#0e1a24" stroke="#2f6b80"/>
+      <rect x="-44" y="40" width="88" height="16" rx="1" fill="#0a121a"/>
+      <path d="M-96,74 C-40,90 40,90 96,74" stroke="#233b49" stroke-width="2" fill="none" opacity=".7"/>
+    </g>
+    <rect x="-150" y="0" width="300" height="10" fill="none" stroke="#3d7f96" opacity=".35"/>
+    <text x="-150" y="98" font-family="monospace" font-size="9" fill="#7cf0c0" opacity=".8">REC ● 41:02:19</text>
+    <text x="150" y="98" text-anchor="end" font-family="monospace" font-size="9" fill="#ffce6a">T-07</text>
+  </g>`,720+" 360");
+}
+function artHex(){
+  return svgWrap(`
+  <defs><linearGradient id="rackG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0e2233"/><stop offset="1" stop-color="#060c14"/></linearGradient></defs>
+  <rect width="720" height="360" fill="#050a11"/>
+  <rect width="720" height="360" fill="url(#rackG)" opacity=".8"/>
+  <g>
+    ${[0,1,2,3].map(i=>`<g transform="translate(${60+i*90},60)">
+      <rect width="72" height="250" rx="3" fill="#0a1620" stroke="#2d6a80"/>
+      ${[0,1,2,3,4,5,6,7,8,9,10].map(j=>`<rect x="8" y="${10+j*21}" width="56" height="15" rx="2" fill="#0d1f2b" stroke="#1e4a5c"/>
+        <rect x="12" y="${13+j*21}" width="${(j%4===0)?10:6}" height="3" fill="${j%3===0?'#7cf0c0':'#59b8ff'}" opacity="${.3+((i+j)%4)*.18}"/>
+        <rect x="26" y="${13+j*21}" width="4" height="3" fill="#ffce6a" opacity=".35"/>`).join("")}
+    </g>`).join("")}
+    <rect x="430" y="70" width="220" height="150" rx="3" fill="#08121a" stroke="#2d6a80"/>
+    <g font-family="monospace" font-size="9" fill="#4e8f7c">
+      <text x="444" y="92">0000:E4 1B 7A 00 2C F1</text>
+      <text x="444" y="108">0020:8D 03 A1 6F 00 00</text>
+      <text x="444" y="124">0040:C7 22 91 04 EE 10</text>
+      <text x="444" y="140" fill="#ffce6a">0A7F:96 5F 33 07 ▮▮</text>
+      <text x="444" y="156">FFE0:A2 00 00 00 00 1F</text>
+    </g>
+    <rect x="430" y="234" width="220" height="76" fill="#08121a" stroke="#2d6a80"/>
+    <text x="444" y="256" font-family="monospace" font-size="9" fill="#59b8ff">SEGMENT: TAIL / 0400~04FF</text>
+    <text x="444" y="272" font-family="monospace" font-size="9" fill="#5c7183">READ-ONLY ▢ CHECKSUM FAULT</text>
+    <rect x="444" y="282" width="120" height="4" fill="#7cf0c0" opacity=".3"/>
+  </g>`,720+" 360");
+}
+function artSpec(){
+  return svgWrap(`
+  <rect width="720" height="360" fill="#04080d"/>
+  <rect x="40" y="40" width="640" height="280" fill="#06121a" stroke="#2d6a80"/>
+  <g stroke="#123a4a" stroke-width="1">
+    ${[...Array(15)].map((_,i)=>`<line x1="${40+i*40}" y1="40" x2="${40+i*40}" y2="320"/>`).join("")}
+    ${[...Array(8)].map((_,i)=>`<line x1="40" y1="${40+i*40}" x2="680" y2="${40+i*40}"/>`).join("")}
+  </g>
+  <g opacity=".95">
+    ${[...Array(9)].map((_,i)=>`<rect x="${880-i*4}" y="0" width="2" height="1" fill="none"/>`).join("")}
+  </g>
+  ${(()=>{const r=rng(33);let o="";for(let i=0;i<140;i++){const x=44+r()*632,y=44+r()*272,w=2+r()*7;
+    o+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${(1+r()*3).toFixed(1)}" fill="${y<180?'#7cf0c0':'#59b8ff'}" opacity="${(.06+r()*.22).toFixed(2)}"/>`}return o})()}
+  <rect x="40" y="40" width="640" height="4" fill="#ffce6a" opacity=".35"/>
+  <g font-family="monospace" font-size="9" fill="#4e8f7c">
+    <text x="46" y="30">GAIN  0.00 dB</text><text x="674" y="30" text-anchor="end">BAND 12.4 kHz</text>
+    <text x="46" y="336">SWEEP 41s</text><text x="674" y="336" text-anchor="end">NOISE FLOOR -92 dB</text>
+  </g>`,720+" 360");
+}
+function artStar(){
+  return svgWrap(`
+  <rect width="720" height="360" fill="#03060b"/>
+  ${starsLayer(140,77,720,360)}
+  <circle cx="360" cy="180" r="146" fill="none" stroke="#2d6a80" stroke-width="1" opacity=".7"/>
+  <circle cx="360" cy="180" r="112" fill="none" stroke="#2d6a80" stroke-width=".7" opacity=".45"/>
+  <g stroke="#7cf0c0" stroke-width="1" opacity=".5">
+    ${[...Array(12)].map((_,i)=>{const a=i*30*Math.PI/180;return `<line x1="${360+Math.cos(a)*140}" y1="${180+Math.sin(a)*140}" x2="${360+Math.cos(a)*150}" y2="${180+Math.sin(a)*150}"/>`}).join("")}
+  </g>
+  <g font-family="monospace" font-size="8" fill="#59b8ff" opacity=".8">
+    <text x="360" y="26" text-anchor="middle">N: 000</text>
+    <text x="360" y="346" text-anchor="middle">S: 180</text>
+  </g>`,720+" 360");
+}
+function artPatch(){
+  return svgWrap(`
+  <rect width="720" height="360" fill="#04090f"/>
+  <rect x="30" y="30" width="660" height="300" fill="#071119" stroke="#2d6a80"/>
+  <g font-family="monospace" font-size="9" fill="#4e8f7c">
+    <text x="44" y="52">PATCH BAY 07 — SIGNAL ROUTER</text>
+    <text x="676" y="52" text-anchor="end">AUTH: ----</text>
+  </g>
+  ${[0,1,2].map(i=>`<g><rect x="52" y="${80+i*54}" width="54" height="34" fill="#0b1e2a" stroke="#3d7f96"/>
+    <text x="79" y="${102+i*54}" text-anchor="middle" font-family="monospace" font-size="11" fill="#59b8ff">IN ${"ABC"[i]}</text></g>`).join("")}
+  ${[0,1,2].map(i=>`<g><rect x="614" y="${80+i*54}" width="54" height="34" fill="#0b1e2a" stroke="#3d7f96"/>
+    <text x="641" y="${102+i*54}" text-anchor="middle" font-family="monospace" font-size="11" fill="#7cf0c0">OUT ${i+1}</text></g>`).join("")}
+  ${[0,1,2,3].map(i=>`<g><rect x="${168+i*108}" y="150" width="82" height="60" fill="#0a1a26" stroke="#356a7f"/>
+    <text x="${209+i*108}" y="176" text-anchor="middle" font-family="monospace" font-size="9" fill="#5c7183">GATE 0${i+1}</text>
+    <circle cx="${209+i*108}" cy="194" r="8" fill="#12283a" stroke="#7cf0c0" opacity=".6"/></g>`).join("")}
+  <g stroke="#2d6a80" stroke-dasharray="3 4" opacity=".8">
+    <path d="M106,97 H160"/><path d="M250,180 H276"/><path d="M358,180 H384"/><path d="M466,180 H492"/><path d="M574,180 H614"/>
+  </g>`,720+" 360");
+}
+function artEnd(){
+  return svgWrap(`
+  <defs>
+    <radialGradient id="eG" cx="50%" cy="60%" r="60%"><stop offset="0" stop-color="#123a52"/><stop offset="1" stop-color="#04070d"/></radialGradient>
+    <linearGradient id="eB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7cf0c0" stop-opacity="0"/><stop offset=".45" stop-color="#7cf0c0" stop-opacity=".5"/><stop offset="1" stop-color="#7cf0c0" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="720" height="360" fill="url(#eG)"/>
+  ${starsLayer(80,5,720,300)}
+  <circle cx="360" cy="470" r="300" fill="#08161f"/>
+  <g transform="translate(360,196)">
+    <rect x="-120" y="-40" width="240" height="58" rx="4" fill="#0f2536" stroke="#3d7f96"/>
+    <rect x="-104" y="-28" width="120" height="5" rx="2" fill="#7cf0c0" opacity=".45"/>
+    <rect x="-104" y="-18" width="86" height="4" rx="2" fill="#59b8ff" opacity=".3"/>
+    <rect x="60" y="-30" width="44" height="34" rx="3" fill="#132c40" stroke="#356a7f"/>
+    <circle cx="82" cy="-13" r="7" fill="#ffce6a" opacity=".85"/>
+    <path d="M0,-40 L0,-104" stroke="#3d7f96" stroke-width="2"/>
+    <path d="M-30,-104 A30,30 0 0 1 30,-104" stroke="#8fb9c9" stroke-width="6" fill="none"/>
+  </g>
+  <path d="M360,58 L740,0 L740,120 Z" fill="url(#eB)"/>
+  <circle cx="360" cy="58" r="14" fill="#ffce6a" opacity=".22"/>
+  <g font-family="monospace" font-size="9" fill="#4e8f7c">
+    <text x="20" y="340">TX 213° / KITE / BAY 07 / 1998</text>
+    <text x="700" y="340" text-anchor="end">LINK ESTABLISHED</text>
+  </g>`,720+" 360");
+}
+function artCrate(){
+  return svgWrap(`
+  <rect width="720" height="360" fill="#05090f"/>
+  ${starsLayer(26,9,720,240)}
+  <g transform="translate(360,190)">
+    <rect x="-110" y="-78" width="220" height="156" fill="#0e1c26" stroke="#356a7f" stroke-width="1.2"/>
+    <rect x="-96" y="-62" width="192" height="124" fill="#08121a" stroke="#1e4a5c"/>
+    <path d="M-110,-20 H110" stroke="#1e4a5c"/>
+    <text x="0" y="-30" text-anchor="middle" font-family="monospace" font-size="10" fill="#ffce6a">UNREGISTERED</text>
+    <text x="0" y="-4" text-anchor="middle" font-family="monospace" font-size="9" fill="#5c7183">NOT IN MANIFEST</text>
+    <g font-family="monospace" font-size="8" fill="#4e8f7c">
+      <text x="-88" y="18">PROPERTY OF: ----------</text>
+      <text x="-88" y="34">SEALED 1998.11.07</text>
+      <text x="-88" y="50">HANDOVER: DO NOT LIST</text>
+    </g>
+    <rect x="-96" y="52" width="60" height="6" fill="#7cf0c0" opacity=".25"/>
+  </g>`,720+" 360");
+}
+
+/* 封存包结构剖面 */
+function artCross(){
+  const W=720,H=250;
+  let px="";
+  const r=rng(401);
+  for(let i=0;i<64;i++){ const x=40+i*9.6; px+=`<rect x="${x.toFixed(1)}" y="112" width="7" height="${(6+r()*16).toFixed(1)}" fill="#59b8ff" opacity="${(.16+r()*.3).toFixed(2)}"/>` }
+  return svgWrap(`
+  <rect width="${W}" height="${H}" fill="#050a11"/>
+  <g font-family="monospace" font-size="8.5" fill="#4e8f7c">
+    <text x="40" y="34">SEALED-PKG STRUCTURE / 只读转储</text>
+    <text x="680" y="34" text-anchor="end">0400 处出现协议切换</text>
+  </g>
+  <rect x="40" y="60" width="564" height="52" fill="#0a1a26" stroke="#2d6a80"/>
+  <text x="52" y="82" font-family="monospace" font-size="9" fill="#8ba3b2">IMAGE HEADER + PIXEL DATA （图像协议）</text>
+  <g>${px}</g>
+  <rect x="604" y="60" width="76" height="52" fill="#221a10" stroke="#ffcb6b"/>
+  <text x="642" y="90" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffcb6b">TAIL</text>
+  <line x1="604" y1="52" x2="604" y2="210" stroke="#ffcb6b" stroke-width="1.4"/>
+  <line x1="604" y1="52" x2="612" y2="52" stroke="#ffcb6b" stroke-width="1.4"/>
+  <text x="600" y="228" text-anchor="end" font-family="monospace" font-size="8.5" fill="#ffcb6b">0x0400 · 越界起点</text>
+  <g opacity=".9">
+    <rect x="40" y="150" width="640" height="34" fill="#06121a" stroke="#1d4250"/>
+    <text x="52" y="172" font-family="monospace" font-size="9" fill="#33505b">0400  &gt;&gt;&gt; SEGMENT: TAIL</text>
+    <text x="336" y="172" font-family="monospace" font-size="9" fill="#7ff0c1">KEY=B7K2</text>
+    <text x="460" y="172" font-family="monospace" font-size="9" fill="#7ff0c1">PATH:/vault/b7</text>
+    <text x="600" y="172" font-family="monospace" font-size="9" fill="#33505b">EOF</text>
+  </g>
+  <g font-family="monospace" font-size="8" fill="#33505b">
+    <text x="40" y="206">↑ 以上每一行都可以在转储窗口里点选，用来标出协议结束的位置</text>
+  </g>`,W+" "+H);
+}
+/* 结局：地球侧接收站 */
+function artEarth(){
+  const W=720,H=300; const r=rng(4141);
+  let st=""; for(let i=0;i<90;i++){ st+=`<circle cx="${(r()*W).toFixed(1)}" cy="${(r()*150).toFixed(1)}" r="${(.4+r()*1.2).toFixed(2)}" fill="#d7ecf6" opacity="${(.2+r()*.5).toFixed(2)}"/>` }
+  return svgWrap(`
+  <defs>
+    <radialGradient id="erSky" cx="50%" cy="70%" r="70%"><stop offset="0" stop-color="#0b2233"/><stop offset="1" stop-color="#03070c"/></radialGradient>
+    <linearGradient id="erGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1c22"/><stop offset="1" stop-color="#030a0d"/></linearGradient>
+    <linearGradient id="erBeam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ff0c1" stop-opacity=".35"/><stop offset="1" stop-color="#7ff0c1" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="${W}" height="${H}" fill="url(#erSky)"/>
+  ${st}
+  <path d="M0,196 C120,184 220,192 320,186 C440,178 560,188 720,180 L720,300 L0,300 Z" fill="url(#erGround)"/>
+  <g transform="translate(300,0)">
+    <path d="M0,186 L0,110" stroke="#3b6d85" stroke-width="3"/>
+    <path d="M-46,110 A46,46 0 0 1 46,110" stroke="#93c0cf" stroke-width="2.4" fill="none"/>
+    <line x1="0" y1="110" x2="0" y2="150" stroke="#93c0cf" stroke-width="1.2" opacity=".7"/>
+    <circle cx="0" cy="106" r="4" fill="#ffcb6b"/>
+    <circle cx="0" cy="106" r="16" fill="#ffcb6b" opacity=".14"/>
+    <path d="M0,96 L-90,-120 L90,-120 Z" fill="url(#erBeam)" opacity=".22" transform="scale(1,-1)"/>
+    <rect x="-14" y="184" width="28" height="10" fill="#0e2531" stroke="#2d5568"/>
+  </g>
+  <g transform="translate(500,0)">
+    <rect x="-46" y="150" width="92" height="36" fill="#0b1e29" stroke="#2d5568"/>
+    <rect x="-38" y="158" width="60" height="4" fill="#7ff0c1" opacity=".35"/>
+    <rect x="-38" y="166" width="40" height="3" fill="#59b8ff" opacity=".28"/>
+    <circle cx="34" cy="164" r="3" fill="#ffcb6b" opacity=".8"/>
+  </g>
+  <g font-family="monospace" font-size="8.5" fill="#5c8496">
+    <text x="20" y="270">GROUND STATION / 31.2N 121.4E</text>
+    <text x="700" y="270" text-anchor="end">RX ▸ 200 ms PULSE / RECEIVED</text>
+  </g>`,W+" "+H);
+}
+
+/* ================= 通用：成功条 ================= */
+function doneStrip(keyLabel,keyVal,extra){
+  const d=el("div","done-strip");
+  d.innerHTML=`<div class="k">ARCHIVED</div><div><div class="v">本份档案已归档。${extra||""}</div>
+    <div class="k" style="margin-top:3px">${keyLabel?keyLabel+" = "+keyVal:""}</div></div>`;
+  return d;
+}
+function footNav(prevIdx,nextFn,nextLabel){
+  const n=el("div","navfoot");
+  const l=el("div");
+  if(prevIdx!=null && prevIdx>=0){
+    const b=el("button","btn sm","‹ 返回档案柜");
+    b.addEventListener("click",()=>open(prevIdx));
+    l.appendChild(b);
+  }
+  n.appendChild(l);
+  const r=el("div");
+  if(nextFn){ const b=el("button","btn go",nextLabel); b.addEventListener("click",nextFn); r.appendChild(b) }
+  else{
+    const b=el("button","btn sm","返回档案柜"); b.addEventListener("click",()=>open(S.cur)); r.appendChild(b);
+  }
+  n.appendChild(r); return n;
+}
+function hero(type,cap){
+  const map={tape:artTape,photo:artPhotoCard,hex:artHex,spec:artSpec,star:artStar,patch:artPatch,end:artEnd,crate:artCrate,cross:artCross,pipe:artPipe};
+  const fn=map[type]||artTape;
+  const d=el("div","hero"); d.innerHTML=fn();
+  const veil=el("div","hero-veil"); d.appendChild(veil);
+  if(cap){
+    const c=el("div","hero-cap");
+    c.innerHTML=`<span>${cap[0]||""}</span><span>${cap[1]||""}</span>`;
+    d.appendChild(c);
+  }
+  return d;
+}
+function shellHead(kicker,title,sub){
+  const h=el("div","ph-head");
+  h.innerHTML=`<div><div class="ph-kicker">${kicker}</div><div class="ph-title">${title}</div>
+    <div class="ph-sub">${sub}</div></div>`;
+  return h;
+}
+
+/* ================= 封面 ================= */
+function M_cover(){
+  const st=$("stage"); st.innerHTML="";
+  try{ window.scrollTo({top:0,behavior:"instant"}) }catch(e){ window.scrollTo(0,0) }
+  const p=el("div","panel");
+  const c=el("div","body cover");
+  const dn=RECS.filter(r=>S.done[r.id]).length, lm=S.lamps.length;
+  c.innerHTML=`<div class="cover-t">静默轨道 / SILENT ORBIT</div>
+    <div class="cover-h">长夜档案馆</div>
+    <div class="cover-s">第七号机柜 · 结项审计 · 2079</div>
+    <div class="cover-rule"></div>
+    <div class="cover-art" id="coverArt"></div>
+    <p class="cover-p">四十一年的轨道档案即将再入大气层。你被派来核对最后七份封存记录，签下结项单。
+    但主控仍在自动重发一段信号——每 41 秒一次，四十一年没有停过。<br><br>
+    档案里没有写这段信号是什么。你只有一个夜班的时间，把它查清楚。</p>
+    <div class="cover-meta">
+      <span>单文件 · 离线可玩</span><span>建议时长 70–82 分钟</span><span>无提示 · 纯推理</span><span>轻科幻 · 温情向</span>
+    </div>
+    <div class="cover-prog" id="coverProg"></div>
+    <div class="row" id="ctaRow" style="margin-top:20px;justify-content:center"></div>
+    <div class="boot" id="bootBox"></div>`;
+  p.appendChild(c);
+  const pg=c.querySelector("#coverProg");
+  if(pg && (dn>0||lm>0)) pg.textContent=`本次审计进度 · 已归档 ${dn}/7 · 微光 ${lm}/7`;
+  else if(pg) pg.style.display="none";
+  const row=c.querySelector("#ctaRow");
+  const b=el("button","btn go primary","接入档案柜 ›");
+  b.addEventListener("click",()=>{ auWake(); SND.click(); S.seen=true; save(); open(0) });
+  b.addEventListener("mouseenter",()=>SND.hover());
+  row.appendChild(b);
+  const b2=el("button","btn sm","继续上次审计");
+  if(S.cur!==-1 && S.max>0) b2.addEventListener("click",()=>{ auWake(); open(S.cur>=0?S.cur:0) });
+  else b2.style.display="none";
+  row.appendChild(b2);
+  const b3=el("button","btn sm","值班铃 · 可选");
+  b3.addEventListener("click",()=>{ auWake(); bellOpen() });
+  row.appendChild(b3);
+  st.appendChild(p);
+
+  const lines=[
+    "ARCH-OS 3.0 BOOT ... <span class='ok'>[ OK ]</span>",
+    "MOUNT /vault/longnight ... <span class='ok'>[ OK ]</span>",
+    "CHK 7 SEALED RECORDS ... <span style='color:var(--am)'>2 FAULT</span>",
+    "WARN: AUTO-BROADCAST ACTIVE (41s loop)",
+    "OPERATOR: AUDITOR-1 / SHIFT 1",
+    "「别关灯。」—— 未署名的旁注"
+  ];
+  const ca=c.querySelector("#coverArt"); if(ca){
+    ca.innerHTML=artCover();
+    const cap=el("div","hero-cap");
+    cap.style.cssText+="position:absolute;";
+    cap.innerHTML=`<span>ARCHIVE STATION · NODE 07</span><span>ONE WINDOW STILL LIT</span>`;
+    ca.appendChild(cap);
+    const hs=el("button","beacon-hot"); hs.dataset.egg="beacon"; hs.setAttribute("aria-hidden","true");
+    hs.title=""; ca.appendChild(hs);
+  }
+  const bb=c.querySelector("#bootBox");
+  lines.forEach((t,i)=>{
+    const d=el("div"); d.innerHTML="» "+t;
+    d.style.animationDelay=(i*.32)+"s";
+    bb.appendChild(d);
+    if(i===3) setTimeout(()=>{},0);
+  });
+}
+
+/* ================= 模块注册（后续分块写入） ================= */
+const M={};
+/* ================= 照片插图（可交互） ================= */
+function photoDefs(){
+  return `<defs>
+    <linearGradient id="pSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26465a"/><stop offset=".55" stop-color="#1a3140"/><stop offset="1" stop-color="#0f1e28"/></linearGradient>
+    <linearGradient id="pHaze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b3803f" stop-opacity="0"/><stop offset="1" stop-color="#b3803f" stop-opacity=".18"/></linearGradient>
+    <radialGradient id="pVig" cx="50%" cy="45%" r="72%"><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></radialGradient>
+    <linearGradient id="pWall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2e4451"/><stop offset="1" stop-color="#1c2e39"/></linearGradient>
+    <linearGradient id="pFloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#23363f"/><stop offset="1" stop-color="#14242e"/></linearGradient>
+    <radialGradient id="pLamp" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffdca8" stop-opacity=".34"/><stop offset="1" stop-color="#ffdca8" stop-opacity="0"/></radialGradient>
+    <linearGradient id="pFig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050a0e"/><stop offset="1" stop-color="#020507"/></linearGradient>
+    <clipPath id="lensClip"><circle id="lensClipC" cx="380" cy="250" r="78"/></clipPath>
+  </defs>`;
+}
+function photoScene(){
+  const r=rng(4242); let city="", win="", grain="";
+  for(let i=0;i<30;i++){ const w=10+Math.floor(r()*26), h=18+Math.floor(r()*72), x=i*27-8;
+    city+=`<rect x="${x}" y="${256-h}" width="${w}" height="${h+8}" fill="#16262f"/>`; }
+  for(let i=0;i<70;i++){ const x=Math.floor(r()*780)+6, y=196+Math.floor(r()*58);
+    win+=`<rect x="${x}" y="${y}" width="1.8" height="1.8" fill="#ffce6a" opacity="${(.10+r()*.42).toFixed(2)}"/>`; }
+  for(let i=0;i<700;i++){ const x=r()*800, y=r()*500;
+    grain+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r=".5" fill="#e8f0f2" opacity="${(.02+r()*.06).toFixed(3)}"/>`; }
+  return `
+  <rect width="800" height="500" fill="url(#pSky)"/>
+  <rect y="210" width="800" height="60" fill="url(#pHaze)" opacity=".55"/>
+  <!-- 远处城市 -->
+  ${city}${win}
+  <path d="M0,258 H800" stroke="#1b2f3b" stroke-width="1" opacity=".7"/>
+  <!-- 屋顶地面 -->
+  <rect y="262" width="800" height="238" fill="url(#pFloor)"/>
+  <path d="M0,300 L800,286" stroke="#223743" stroke-width="1.6" fill="none"/>
+  <g stroke="#101f28" stroke-width="1" opacity=".9">
+    <path d="M0,340 L800,326"/><path d="M0,392 L800,382"/><path d="M0,452 L800,448"/>
+  </g>
+  <g stroke="#101f28" stroke-width="1" opacity=".55">
+    <path d="M120,300 L60,500"/><path d="M300,300 L280,500"/><path d="M480,296 L470,500"/><path d="M660,292 L680,500"/>
+  </g>
+  <!-- 左侧混凝土矮墙 -->
+  <path d="M0,78 L214,92 L214,500 L0,500 Z" fill="url(#pWall)"/>
+  <path d="M0,78 L214,92" stroke="#33505f" stroke-width="1.6"/>
+  <path d="M208,92 L208,500" stroke="#0a1218" stroke-width="3"/>
+  <path d="M0,78 L0,500" stroke="#0a1218" stroke-width="2"/>
+  <!-- 挂历 -->
+  <g transform="translate(96,150) rotate(-2.5)">
+    <rect width="70" height="94" fill="#b9c2c8" opacity=".82"/><rect width="70" height="94" fill="url(#pLamp)" opacity=".5"/>
+    <rect width="70" height="17" fill="#a3a898"/>
+    <text x="35" y="12" text-anchor="middle" font-family="monospace" font-size="7.5" fill="#25303a">1998</text>
+    <text x="7" y="31" font-family="monospace" font-size="7" fill="#39434a">11月</text>
+    ${[0,1,2,3,4].map(i=>`<g>${[0,1,2,3,4,5,6].map(j=>`<rect x="${6+j*9}" y="${37+i*9.4}" width="6.4" height="5.8" fill="none" stroke="#7d857a" stroke-width=".5"/>`).join("")}</g>`).join("")}
+    <rect x="43" y="47" width="7.4" height="6" fill="#8d3a33" opacity=".85"/>
+    <text x="35" y="90" text-anchor="middle" font-family="monospace" font-size="5.6" fill="#6c7368">长夜 / 11.07</text>
+  </g>
+  <!-- 矮墙暗处的记号笔字迹（抬高曝光后可见） -->
+  <g>
+    <text x="26" y="404" font-family="monospace" font-size="11.5" fill="#3a6076" letter-spacing="1.2">1998.11.07</text>
+    <text x="26" y="424" font-family="monospace" font-size="9.5" fill="#32566c" letter-spacing="2.4">别关灯</text>
+    <text x="26" y="441" font-family="monospace" font-size="8" fill="#2b4c60">—— 77</text>
+  </g>
+  <!-- 墙上的灯泡 -->
+  <g>
+    <line x1="66" y1="66" x2="66" y2="104" stroke="#243743" stroke-width="1.2"/>
+    <circle cx="66" cy="108" r="26" fill="url(#pLamp)" opacity=".9"/>
+    <circle cx="66" cy="108" r="4.2" fill="#ffe6bd" opacity=".9"/>
+    <path d="M56,116 A10,10 0 0 1 76,116" fill="#2b3f4a"/>
+  </g>
+  <!-- 屋顶水塔 -->
+  <g>
+    <path d="M236,296 L238,196 Q238,186 248,186 L280,186 Q290,186 290,196 L292,296" fill="#132430"/>
+    <path d="M236,196 H292" stroke="#243a47" stroke-width="1.2"/>
+    <path d="M240,186 Q240,160 264,160 Q288,160 288,186" fill="#0f1e29" stroke="#243a47" stroke-width="1"/>
+    <path d="M252,296 L254,206 M272,296 L270,206" stroke="#1b303c" stroke-width="2"/>
+  </g>
+  <!-- 桌子、录音机、台灯 -->
+  <g>
+    <rect x="372" y="336" width="188" height="7" fill="#20313b"/>
+    <rect x="380" y="343" width="6" height="96" fill="#16252e"/><rect x="556" y="343" width="6" height="96" fill="#16252e"/>
+    <g transform="translate(404,306)">
+      <rect width="86" height="30" rx="1.5" fill="#22343f" stroke="#3d5b68"/>
+      <rect x="6" y="6" width="50" height="17" fill="#0a1218"/>
+      <circle cx="16" cy="14.5" r="4.4" fill="#0d1a22" stroke="#46697a"/>
+      <circle cx="34" cy="14.5" r="4.4" fill="#0d1a22" stroke="#46697a"/>
+      <rect x="66" y="7" width="16" height="5" fill="#c9b06a" opacity=".5"/>
+      <circle cx="76" cy="20" r="3.2" fill="#0a1218" stroke="#3d5b68"/>
+    </g>
+    <g transform="translate(548,326)">
+      <rect x="-12" y="-4" width="24" height="5" fill="#2a3d49"/>
+      <path d="M-1,-4 L-1,-26" stroke="#2a3d49" stroke-width="2"/>
+      <path d="M-13,-26 L13,-26 L18,-42 L-18,-42 Z" fill="#3a4d59"/>
+      <path d="M-18,-42 L18,-42 L15,-38.5 L-15,-38.5 Z" fill="#ffdca8" opacity=".7"/>
+    </g>
+    <ellipse cx="500" cy="338" rx="120" ry="70" fill="url(#pLamp)"/>
+  </g>
+  <!-- 人物（背身站在栏杆前） -->
+  <g fill="url(#pFig)">
+    <ellipse cx="612" cy="234" rx="12" ry="14"/>
+    <path d="M604,222 C606,211 618,211 620,221 C617,226 607,227 604,222 Z" fill="#04090c"/>
+    <path d="M602,248 L622,248 L626,258 L598,258 Z" fill="#081016"/>
+    <path d="M594,260 C600,254 624,254 630,260 L636,352 L630,358 L594,358 L588,352 Z"/>
+    <path d="M594,266 L580,320 L588,324 L602,278 Z"/>
+    <path d="M630,266 L644,318 L636,322 L622,278 Z"/>
+    <path d="M596,354 L592,432 L601,432 L606,358 Z"/>
+    <path d="M628,354 L632,432 L623,432 L618,358 Z"/>
+    <path d="M588,432 L605,432 L605,439 L586,439 Z"/>
+    <path d="M620,432 L637,432 L639,439 L620,439 Z"/>
+  </g>
+  <g fill="none" stroke="#a9d2e2" stroke-width=".9" opacity=".38">
+    <path d="M602,221 C606,212 618,212 621,219"/>
+    <path d="M595,260 C601,254 623,254 629,260"/>
+    <path d="M631,268 L643,318"/>
+  </g>
+  <!-- 桌上摊开的信纸 -->
+  <g transform="rotate(-7 512 330)"><rect x="494" y="320" width="38" height="26" fill="#cdd0c1"/>
+    <path d="M498,326 L528,324 M498,331 L526,329 M498,336 L518,334" stroke="#8d9083" stroke-width=".7"/>
+    <rect x="494" y="320" width="38" height="26" fill="none" stroke="#9aa093" stroke-width=".6"/></g>
+  <ellipse cx="548" cy="332" rx="96" ry="24" fill="#ffdca8" opacity=".10"/>
+  <!-- 右侧栏杆 -->
+  <g stroke="#1c303c" stroke-width="2.2">
+    <path d="M664,238 L664,330"/><path d="M700,236 L700,332"/><path d="M736,234 L736,334"/><path d="M772,232 L772,336"/>
+    <path d="M660,250 L790,244"/><path d="M662,300 L790,296"/>
+  </g>
+  <!-- 胶片质感与边框 -->
+  <rect width="800" height="500" fill="url(#pVig)" pointer-events="none"/>
+  ${grain}
+  <rect x="0" y="0" width="800" height="500" fill="none" stroke="#000" stroke-width="8" opacity=".5"/>
+  <g font-family="monospace" font-size="8" fill="#ffce6a" opacity=".45"><text x="16" y="486">KODAK 400 · 1998</text></g>`;
+}
+function artPhotoMini(){
+  return `<svg viewBox="0 0 800 500">${photoDefs()}${photoScene()}</svg>`;
+}
+/* 档案插图：钉在墙上的相片（不与 R2 舞台共用 defs） */
+function artPhotoCard(){
+  const r=rng(2299); let st="";
+  for(let i=0;i<120;i++){ st+=`<circle cx="${(r()*720).toFixed(1)}" cy="${(r()*250).toFixed(1)}" r="${(.4+r()*1.3).toFixed(2)}" fill="#cfeeff" opacity="${(.15+r()*.5).toFixed(2)}"/>` }
+  return svgWrap(`
+  <defs>
+    <linearGradient id="pcWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1a24"/><stop offset="1" stop-color="#040b10"/></linearGradient>
+    <linearGradient id="pcPaper" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8f9d96"/><stop offset="1" stop-color="#4e5c5e"/></linearGradient>
+    <radialGradient id="pcLamp" cx="34%" cy="30%" r="60%"><stop offset="0" stop-color="#ffd79a" stop-opacity=".30"/><stop offset="1" stop-color="#ffd79a" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="720" height="250" fill="url(#pcWall)"/>
+  ${st}
+  <rect width="720" height="250" fill="url(#pcLamp)"/>
+  <g transform="translate(238,26) rotate(-2.1)">
+    <rect x="0" y="0" width="244" height="186" fill="url(#pcPaper)" stroke="#26363c"/>
+    <rect x="8" y="8" width="228" height="170" fill="#16232a"/>
+    <!-- 照片内容缩影：矮墙、手、灯 -->
+    <rect x="8" y="112" width="228" height="66" fill="#0c1720"/>
+    <path d="M8,112 L236,112" stroke="#2a3d49" stroke-width="1"/>
+    <rect x="34" y="128" width="86" height="6" fill="#a9793f" opacity=".5"/>
+    <circle cx="176" cy="86" r="5" fill="#ffcb6b"/>
+    <circle cx="176" cy="86" r="18" fill="#ffcb6b" opacity=".18"/>
+    <path d="M150,120 C158,110 166,104 176,100" stroke="#ffcb6b" stroke-width="1" opacity=".4" fill="none"/>
+    <text x="20" y="160" font-family="monospace" font-size="7" fill="#7ff0c1" opacity=".7">别关灯</text>
+    <!-- 扫描光带 -->
+    <rect x="8" y="8" width="228" height="2" fill="#7ff0c1" opacity=".35"/>
+    <rect x="8" y="8" width="228" height="170" fill="#7ff0c1" opacity=".04"/>
+  </g>
+  <g transform="translate(512,74)">
+    <rect x="0" y="0" width="118" height="150" fill="#d8cfb6" stroke="#8d8570" opacity=".9" transform="rotate(6 59 75)"/>
+    <text x="14" y="26" font-family="monospace" font-size="7.5" fill="#4a4436" transform="rotate(6 59 75)">LOAN CARD</text>
+    <text x="14" y="42" font-family="monospace" font-size="7" fill="#6b6450" transform="rotate(6 59 75)">1998.11.07</text>
+    <text x="14" y="56" font-family="monospace" font-size="7" fill="#6b6450" transform="rotate(6 59 75)">SEALED · 77</text>
+  </g>
+  <rect x="196" y="16" width="60" height="16" fill="#e3dcc6" opacity=".35" transform="rotate(-6 226 24)"/>
+  <rect x="452" y="200" width="60" height="16" fill="#e3dcc6" opacity=".3" transform="rotate(5 482 208)"/>
+  <g font-family="monospace" font-size="8" fill="#5c8496">
+    <text x="18" y="234">IMG-1107 · 未冲洗 · 颗粒过曝</text>
+    <text x="702" y="234" text-anchor="end">SCAN 800×500</text>
+  </g>`,`720 250`);
+}
+
+function photoBack(){
+  const r=rng(7788); let fib="";
+  for(let i=0;i<260;i++){ const x=r()*800,y=r()*500; fib+=`<line x1="${x.toFixed(0)}" y1="${y.toFixed(0)}" x2="${(x+4+r()*10).toFixed(0)}" y2="${(y+2+r()*5).toFixed(0)}" stroke="#8a7f68" stroke-width=".5" opacity="${(.03+r()*.07).toFixed(2)}"/>` }
+  return `<svg viewBox="0 0 800 500" id="pb">
+  <defs>
+    <linearGradient id="pbPaper" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8cfb6"/><stop offset=".5" stop-color="#cdc3a8"/><stop offset="1" stop-color="#b8ac8e"/></linearGradient>
+    <radialGradient id="pbStain" cx="72%" cy="26%" r="26%"><stop offset="0" stop-color="#8a6f3e" stop-opacity=".28"/><stop offset="1" stop-color="#8a6f3e" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#pbPaper)"/>
+  ${fib}
+  <rect width="800" height="500" fill="url(#pbStain)"/>
+  <!-- 借阅卡 -->
+  <g transform="translate(96,104) rotate(-1.4)">
+    <rect width="300" height="186" fill="#efe8d6" stroke="#a99a7c"/>
+    <rect width="300" height="30" fill="#a9a08a"/>
+    <text x="14" y="21" font-family="monospace" font-size="11" fill="#2d332f">ARCHIVE LOAN CARD · 07</text>
+    ${[0,1,2,3].map(i=>`<line x1="14" y1="${58+i*32}" x2="286" y2="${58+i*32}" stroke="#9b917c" stroke-width=".8"/>`).join("")}
+    <g font-family="monospace" font-size="10" fill="#3c4340">
+      <text x="16" y="52">1998.03.02</text><text x="150" y="52">审核 · 入库</text>
+      <text x="16" y="84">1998.07.19</text><text x="150" y="84">借出 · 未归</text>
+      <text x="16" y="116">1998.11.07</text><text x="150" y="116">封存 · 77</text>
+      <text x="16" y="148" fill="#8d3a33">最后一次 · 别关灯</text>
+    </g>
+  </g>
+  <!-- 铅笔字（右下） -->
+  <g transform="translate(520,318) rotate(-2.2)" fill="#4a4436" font-family="monospace">
+    <text x="0" y="0" font-size="15">她怕黑。</text>
+    <text x="0" y="26" font-size="15">灯要留到天亮。</text>
+    <text x="0" y="56" font-size="10" fill="#6b6450">—— 77，值班第 41 年</text>
+  </g>
+  <!-- 圆形藏印 -->
+  <g transform="translate(660,150)" opacity=".5">
+    <circle r="46" fill="none" stroke="#7d5a3a" stroke-width="3"/>
+    <circle r="40" fill="none" stroke="#7d5a3a" stroke-width="1"/>
+    <text y="-6" text-anchor="middle" font-family="monospace" font-size="10" fill="#7d5a3a">长夜档案馆</text>
+    <text y="12" text-anchor="middle" font-family="monospace" font-size="9" fill="#7d5a3a">SEALED 1998</text>
+  </g>
+  <!-- 胶带痕迹 -->
+  <rect x="18" y="18" width="86" height="24" fill="#e3dcc6" opacity=".55" transform="rotate(-8 60 30)"/>
+  <rect x="700" y="440" width="86" height="24" fill="#e3dcc6" opacity=".4" transform="rotate(6 740 452)"/>
+  <rect x="0" y="0" width="800" height="500" fill="none" stroke="#000" stroke-width="10" opacity=".28"/>
+  </svg>`;
+}
+
+/* ================= 档案 01：值班磁带 ================= */
+M.R1=function(st){
+  const p=el("div","panel");
+  p.appendChild(shellHead("RECORD 01 · 值班磁带","长夜档案馆 · 第七次交接","录音介质 / 41:02 / 录制于 2079.03.11 / 状态：断句损坏"));
+  const hv=hero("tape",["TAPE 07 · HANDOVER","41:02:19 / SIDE A"]); p.appendChild(hv);
+  lampAt(hv,"R1",{right:"18px",bottom:"40px"});
+  const b=el("div","body");
+  b.innerHTML=`<p class="lede">磁带还在转。主控已经断了两天，值班员的声音被切碎了，
+    片段库里还混进了<b>四段别的记录</b>——有的是巡检，有的是门禁，还有两段压着嗓子的杂音。<br>
+    每段都带一点语气——<b>点小圆钮可以先听</b>。挑出属于这次交接的五段，按语气接回去，才能听见他到底交代了什么。</p>`;
+  const desk=el("div","desk");
+  desk.innerHTML=`<div class="tl">TAPE 07 / WAVE</div><div class="tr">41:02</div>`;
+  const wave=el("div");
+  const r=rng(7); let bars="";
+  for(let i=0;i<120;i++){ const h=6+r()*26; bars+=`<div style="width:2px;height:${h.toFixed(0)}px;background:linear-gradient(180deg,var(--ph),rgba(127,240,193,.25));opacity:${(.3+r()*.55).toFixed(2)};border-radius:1px"></div>` }
+  wave.style.cssText="display:flex;gap:2px;align-items:center;justify-content:center;height:60px;margin:18px 0 8px";
+  wave.innerHTML=bars;
+  wave.setAttribute("aria-hidden","true");
+  desk.appendChild(wave);
+  const pool=el("div"); pool.className="row"; pool.style.margin="14px 0 6px"; pool.style.gap="8px";
+  const slotsWrap=el("div"); slotsWrap.style.cssText="display:grid;gap:8px;margin-top:8px";
+  const fr=[
+    {id:"f1",t:"这是长夜档案馆第七次值班交接。",tone:[440,470,500]},
+    {id:"f2",t:"如果你听到这段录音，说明主电源已经断了。",tone:[520,470,420,380]},
+    {id:"f3",t:"请到东侧回廊，找到第七号机柜。",tone:[470,520,560]},
+    {id:"f4",t:"水冷排后面藏着一个没有归档的黑匣子。",tone:[380,360,340,320]},
+    {id:"f5",t:"别把它交给清算组——它不属于这家公司。",tone:[560,500,450,520]},
+    {id:"d1",t:"第七号机柜的水冷排上个月刚换过，声音有点大。",tone:[300,300,300],buzz:true},
+    {id:"d2",t:"备用钥匙我放在门卫室了，交接单上不用写。",tone:[700,760,820],buzz:true},
+    {id:"d3",t:"档案馆的电梯过了四点只停单数层，别走错。",tone:[640,600,560]},
+    {id:"d4",t:"上周的巡检记录我放在第二格抽屉里。",tone:[330,350,330]}
+  ];
+  const showOrder=["d1","f2","d4","f5","f1","d2","f4","d3","f3"];
+  let order=[];
+  const msg=el("div","msg");
+  function playSeg(f){
+    if(!AU.on){ toast("声音已关闭：右上角可开启"); return }
+    auWake();
+    const f0=f;
+    f0.tone.forEach((hz,i)=>{
+      if(f0.buzz) beep(hz+i*8,.11,"sawtooth",.035,i*.12);
+      else beep(hz,.16,"sine",.05,i*.13);
+    });
+  }
+  function drawPool(){
+    pool.innerHTML="";
+    showOrder.forEach((id,n)=>{
+      const f=fr.find(x=>x.id===id);
+      const c=el("div","chip"); c.innerHTML=`<span class="num">${String.fromCharCode(65+n)}</span><span>${f.t}</span><span class="play" title="试听这一段">▶</span>`;
+      if(order.includes(id)) c.classList.add("used");
+      const pb=c.querySelector(".play");
+      pb.addEventListener("click",e=>{ e.stopPropagation(); playSeg(f) });
+      c.addEventListener("mouseenter",()=>SND.hover());
+      c.addEventListener("click",()=>{
+        if(order.length>=5) return;
+        if(order.includes(id)) { toast("这一段已经在录音里了"); SND.err(); return }
+        order.push(id); playSeg(f); drawAll();
+      });
+      pool.appendChild(c);
+    });
+  }
+  function drawSlots(){
+    slotsWrap.innerHTML="";
+    for(let i=0;i<5;i++){
+      const s=el("div","slot"); if(order[i]) s.classList.add("on");
+      if(!order[i] && order.length===i) s.classList.add("cur");
+      s.innerHTML=`<span class="mk">${i+1}</span><span>${order[i]?fr.find(x=>x.id===order[i]).t:'（接在这里）'}</span>`;
+      if(order[i]) s.addEventListener("click",()=>{ order.splice(i,1); SND.tick(); drawAll() });
+      slotsWrap.appendChild(s);
+    }
+  }
+  function drawAll(){ drawPool(); drawSlots(); msg.textContent=""; msg.className="msg" }
+  b.appendChild(desk); b.appendChild(el("div","sub","片段库 / 点击放入，圆钮试听"));
+  b.appendChild(pool);
+  b.appendChild(el("div","sub","录音顺序"));
+  b.appendChild(slotsWrap);
+  drawAll();
+  const row=el("div","row"); row.style.marginTop="16px";
+  const sub=el("button","btn go","播放并校对");
+  const clr=el("button","btn sm","清空");
+  sub.addEventListener("click",()=>{
+    if(order.length<5){ msg.textContent="还有段落没有接上。"; msg.className="msg e"; SND.err(); return }
+    const ok=order.join("")==="f1f2f3f4f5";
+    if(!ok){
+      SND.err();
+      if(order.some(id=>["d1","d2","d3","d4"].includes(id))){
+        msg.textContent="其中混进了别的记录：不是巡检、门禁，就是压着嗓子的杂音——都不是他。"; msg.className="msg e"; return;
+      }
+      let bad=0; for(let i=0;i<5;i++){ if(order[i]!=="f"+(i+1)){ bad=i; break } }
+      msg.textContent=(bad>0?`第 ${bad+1} 段和第 ${bad+2} 段的语气接不上。`:"顺序不对，重头再听一遍。");
+      msg.className="msg e"; return;
+    }
+    msg.textContent="磁带播放完毕：信号稳定，七个字里的机柜号已录入。";
+    msg.className="msg s";
+    const res=el("div","done-strip");
+    res.innerHTML=`<div class="k">BAY</div><div><div class="v">第七号机柜（07）— 东侧回廊，水冷排之后。</div>
+      <div class="k" style="margin-top:3px">机柜编号 = 07</div></div>`;
+    b.appendChild(res);
+    solve("R1",{keys:{bay:"07"},note:"值班交接：主电源已断，请到东侧回廊第七号机柜，水冷排后面有一个未归档的黑匣子。"});
+    b.appendChild(footNav(null,()=>open(1),"下一份：屋顶照片 ›"));
+    sub.disabled=true; clr.disabled=true;
+  });
+  clr.addEventListener("click",()=>{ order=[]; SND.click(); drawAll() });
+  sub.addEventListener("mouseenter",()=>SND.hover());
+  row.appendChild(sub); row.appendChild(clr); b.appendChild(row); b.appendChild(msg);
+  p.appendChild(b); st.appendChild(p);
+};
+
+/* ================= 档案 02：屋顶照片 ================= */
+M.R2=function(st){
+  const p=el("div","panel");
+  p.appendChild(shellHead("RECORD 02 · 屋顶照片","纸上的一夜 · 归档号 IMG-1107","相纸扫描 / 800×500 / 边角有记号笔痕迹"));
+  const hv=hero("photo",["IMG-1107 · 天台 · 1998","EVIDENCE / DELIVERED BY HAND"]);
+  p.appendChild(hv);
+  lampAt(hv,"R2",{left:"16px",bottom:"40px"});
+  const b=el("div","body");
+  b.innerHTML=`<p class="lede">这不是打印件，是一张泡过水的相纸。扫描时整张发暗，
+    左下角那面矮墙上有人用记号笔写过字，普通亮度下几乎看不见。<br>
+    <span style="color:var(--tx3);font-size:12.5px">操作：鼠标在相片上移动＝放大镜；下方两根滑杆用来抬亮暗部；相纸可以翻到背面。</span></p>`;
+
+  // 相纸正/背面
+  const wrap=el("div","photostage"); wrap.id="pwrap";
+  const stage=el("div"); stage.className="photostage"; stage.id="pstage";
+  stage.style.cssText="position:relative;margin:0";
+  stage.innerHTML=`<svg id="psvg" viewBox="0 0 800 500">
+    ${photoDefs()}
+    <g id="pbase">${photoScene()}</g>
+    <g clip-path="url(#lensClip)"><g id="pzoom">${photoScene()}</g></g>
+    <circle id="lensRing" cx="380" cy="250" r="78" fill="none" stroke="#7ff0c1" stroke-width="1.4" opacity=".55"/>
+    <circle id="lensRing2" cx="380" cy="250" r="84" fill="none" stroke="#7ff0c1" stroke-width="1" opacity=".25"/>
+    <path id="crossH" d="M296,250 H464" stroke="#7ff0c1" stroke-width=".6" opacity=".3"/>
+    <path id="crossV" d="M380,166 V334" stroke="#7ff0c1" stroke-width=".6" opacity=".3"/>
+  </svg><div id="pback" style="display:none"></div>`;
+  wrap.appendChild(stage);
+  b.appendChild(wrap);
+
+  const flipRow=el("div","row"); flipRow.style.margin="0 0 4px";
+  const flip=el("button","btn sm","翻到相纸背面 ⇄");
+  const flipMsg=el("div","msg"); flipMsg.style.flexBasis="100%";
+  const zmsg=el("div","dim"); zmsg.style.marginLeft="auto";
+  flipRow.appendChild(flip); flipRow.appendChild(zmsg); flipRow.appendChild(flipMsg);
+  b.appendChild(flipRow);
+  let backShown=false;
+  const pback=stage.querySelector("#pback");
+  flip.addEventListener("click",()=>{
+    backShown=!backShown; SND.click(); auWake();
+    const sv=stage.querySelector("#psvg"); const bk=stage.querySelector("#pback");
+    if(backShown){
+      sv.style.display="none"; bk.style.display="block"; bk.innerHTML=photoBack();
+      flip.textContent="翻回正面 ⇄"; flipMsg.textContent="借阅卡最后一行：1998.11.07 · 封存 · 77。"; flipMsg.className="msg";
+      try{ bk.scrollIntoView({block:"center",behavior:"smooth"}) }catch(e){}
+    }else{
+      sv.style.display="block"; bk.style.display="none";
+      flip.textContent="翻到相纸背面 ⇄"; flipMsg.textContent="";
+      try{ sv.scrollIntoView({block:"center",behavior:"smooth"}) }catch(e){}
+    }
+  });
+
+  const ctrl=el("div","photoctrl");
+  ctrl.innerHTML=`
+    <label class="slider"><span class="lb"><span>曝光补偿</span><b id="vExp">1.00×</b></span>
+      <input type="range" id="sExp" min="1" max="1.55" step="0.01" value="1"></label>
+    <label class="slider"><span class="lb"><span>反差</span><b id="vCon">1.00×</b></span>
+      <input type="range" id="sCon" min="1" max="1.9" step="0.01" value="1"></label>`;
+  b.appendChild(ctrl);
+
+  const svg=stage.querySelector("#psvg");
+  const zoomEl=stage.querySelector("#pzoom");
+  const clipC=stage.querySelector("#lensClipC");
+  const ring=stage.querySelector("#lensRing"), ring2=stage.querySelector("#lensRing2");
+  const ch=stage.querySelector("#crossH"), cv=stage.querySelector("#crossV");
+  let Z=3.2, lx=380, ly=250;
+  function apply(){
+    zoomEl.setAttribute("transform",`translate(${lx},${ly}) scale(${Z}) translate(${-lx},${-ly})`);
+    clipC.setAttribute("cx",lx); clipC.setAttribute("cy",ly);
+    ring.setAttribute("cx",lx); ring.setAttribute("cy",ly);
+    ring2.setAttribute("cx",lx); ring2.setAttribute("cy",ly);
+    ch.setAttribute("d",`M${lx-84},${ly} H${lx+84}`);
+    cv.setAttribute("d",`M${lx},${ly-84} V${ly+84}`);
+    if(zmsg) zmsg.textContent="放大 "+Z.toFixed(1)+"× （滚轮变焦）";
+  }
+  apply();
+  function move(e){
+    const rc=svg.getBoundingClientRect();
+    lx=Math.max(10,Math.min(790,(e.clientX-rc.left)/rc.width*800));
+    ly=Math.max(10,Math.min(490,(e.clientY-rc.top)/rc.height*500));
+    apply();
+  }
+  svg.addEventListener("pointermove",move);
+  svg.addEventListener("pointerdown",e=>{ stage.style.cursor="none"; move(e) });
+  svg.addEventListener("pointerleave",()=>{ stage.style.cursor="" });
+  svg.addEventListener("wheel",e=>{
+    if(backShown) return;
+    e.preventDefault(); Z=Math.max(2,Math.min(5.2,Z+(e.deltaY>0?-.25:.25))); apply();
+  },{passive:false});
+  const se=ctrl.querySelector("#sExp"), sc=ctrl.querySelector("#sCon");
+  const vExp=ctrl.querySelector("#vExp"), vCon=ctrl.querySelector("#vCon");
+  function updFilter(){
+    const ex=parseFloat(se.value), co=parseFloat(sc.value);
+    const f=`brightness(${ex.toFixed(2)}) contrast(${co.toFixed(2)}) saturate(${(1+ (ex-1)*.4).toFixed(2)})`;
+    // 只作用于画面本身，别把镜框与十字线一起提亮
+    ["#pbase","#pzoom"].forEach(id=>{ const g=stage.querySelector(id); if(g) g.style.filter=f });
+    vExp.textContent=ex.toFixed(2)+"×"; vCon.textContent=co.toFixed(2)+"×";
+  }
+  se.addEventListener("input",updFilter); sc.addEventListener("input",updFilter); updFilter();
+
+  // 元数据
+  b.appendChild(el("div","sub","相片元数据 / EXIF"));
+  const metaBox=el("div"); metaBox.style.cssText="border:1px solid var(--line);padding:6px 10px;background:rgba(5,12,18,.7)";
+  const tbl=el("table","meta");
+  tbl.innerHTML=`
+    <tr><td class="k">文件名</td><td class="v">IMG-1107.JPG</td></tr>
+    <tr><td class="k">拍摄时间</td><td class="v bad">2007-03-18 04:11（与相纸年代不符）</td></tr>
+    <tr><td class="k">相机型号</td><td class="v">（空）</td></tr>
+    <tr><td class="k">GPS</td><td class="v">31°14'07"N 121°29'13"E</td></tr>
+    <tr><td class="k">封存备注</td><td class="v lock" id="lockCell">▓▓▓▓ 需解析密钥 ▓▓▓▓</td></tr>`;
+  metaBox.appendChild(tbl); b.appendChild(metaBox);
+
+  const keyRow=el("div","row"); keyRow.style.marginTop="10px";
+  const kin=document.createElement("input"); kin.type="text"; kin.maxLength=8; kin.placeholder="解析密钥"; kin.style.width="150px";
+  const kbtn=el("button","btn sm","解析");
+  const kmsg=el("div","msg"); kmsg.style.flexBasis="100%";
+  keyRow.appendChild(kin); keyRow.appendChild(kbtn); keyRow.appendChild(kmsg);
+  b.appendChild(keyRow);
+  let unlocked=!!S.keys.pk;
+  function unlock(quiet){
+    unlocked=true;
+    const cell=tbl.querySelector("#lockCell"); cell.classList.remove("lock");
+    cell.classList.add("bad");
+    cell.textContent="归档于 1998.11.07 ——「别关灯」（77）";
+    kin.disabled=true; kbtn.disabled=true;
+    if(!quiet) kmsg.textContent="元数据已解析：封存日期与相纸上的手写日期一致。"; kmsg.className="msg s";
+  }
+  kbtn.addEventListener("click",()=>{
+    const v=kin.value.trim().toUpperCase();
+    if(v==="B7K2" || S.keys.pk){ unlock(); }
+    else { kmsg.textContent="密钥无效。来源：档案 03 的封存包尾部。"; kmsg.className="msg e"; kin.classList.add("bad");
+      setTimeout(()=>kin.classList.remove("bad"),350); }
+  });
+  if(unlocked) unlock(true);
+
+  // 年份确认
+  b.appendChild(el("div","sub","确认封存年份"));
+  const row=el("div","row");
+  const yin=document.createElement("input"); yin.type="text"; yin.maxLength=4; yin.placeholder="YYYY"; yin.style.width="110px";
+  const ybtn=el("button","btn go","写入归档");
+  const ymsg=el("div","msg"); ymsg.style.flexBasis="100%";
+  row.appendChild(yin); row.appendChild(ybtn); row.appendChild(ymsg);
+  b.appendChild(row);
+  if(S.done.R2){ yin.disabled=true; ybtn.disabled=true; ymsg.textContent="已归档：封存年份 1998。"; ymsg.className="msg s";
+    b.appendChild(footNav(1,()=>open(2),"下一份：封存包尾部 ›")); }
+  ybtn.addEventListener("click",()=>{
+    const v=yin.value.trim();
+    if(v==="1998"){
+      solve("R2",{keys:{year:"1998"},note:"相片封存于 1998.11.07，矮墙上写着「别关灯」。EXIF 的拍摄时间 2007 明显是伪造的。"});
+      ymsg.textContent="已写入：1998。"; ymsg.className="msg s";
+      ybtn.disabled=true; yin.disabled=true;
+      b.appendChild(doneStrip("SEALED","1998","相纸背面借阅卡的最后一行与矮墙手写日期都是 1998.11.07。"));
+      b.appendChild(footNav(1,()=>open(2),"下一份：封存包尾部 ›"));
+    }else{
+      ymsg.textContent="与相纸边角的记录不一致。再抬高一点曝光，看左下角矮墙。"; ymsg.className="msg e";
+      yin.classList.add("bad"); setTimeout(()=>yin.classList.remove("bad"),350);
+    }
+  });
+  p.appendChild(b); st.appendChild(p);
+};
+
+/* ================= 档案 03：封存包尾部 ================= */
+function hexBytes(seed){
+  const r=rng(seed); const out=[];
+  for(let i=0;i<64;i++){
+    const arr=[]; for(let j=0;j<16;j++) arr.push(Math.floor(r()*256));
+    out.push(arr);
+  }
+  return out;
+}
+function asciiOf(bytes){
+  return bytes.map(b=> (b>=32&&b<127)? String.fromCharCode(b) : ".").join("");
+}
+function hexLine(off,bytes,cls){
+  const h=bytes.map(b=>b.toString(16).toUpperCase().padStart(2,"0")).join(" ").replace(/(.. ){8}/,"$& ");
+  const a=asciiOf(bytes).replace(/</g,"&lt;");
+  return `<span class="${cls||''}" data-off="${off}">${off.toString(16).toUpperCase().padStart(4,"0")}  ${h.padEnd(48," ")}  |${a}|</span>`;
+}
+function textToBytes(txt){
+  const b=[]; for(let i=0;i<txt.length && i<16;i++) b.push(txt.charCodeAt(i));
+  while(b.length<16) b.push(0);
+  return b;
+}
+M.R3=function(st){
+  const p=el("div","panel");
+  p.appendChild(shellHead("RECORD 03 · 封存包尾部","SEALED-PKG / 0400—04FF 区段","转储工具：只读 / 文件头不匹配 / 尾部缝合了非图像协议"));
+  const hv=hero("cross",["SEALED-PKG 0400—04FF","STRUCTURE CROSS-SECTION"]);
+  p.appendChild(hv);
+  const b=el("div","body");
+  b.innerHTML=`<p class="lede">这个封存包在归档时被"加过尾巴"。文件头仍然是图像，尾部却被另一种协议缝合了十六个字节的溢出数据。
+    工具只认十六进制——<b>拉到最底</b>看最右边那一列 ASCII，并在地址列里<b>点出越界起点</b>（图像协议结束的那一行）。</p>
+    <div class="toolbar">
+      <input type="text" id="goOff" placeholder="输入地址，如 0400" style="width:170px">
+      <button class="btn sm" id="btnGoOff">定位</button>
+      <button class="btn sm" id="btnTail">跳到尾部 ›</button>
+      <span class="msg" id="goMsg" style="flex:1"></span>
+    </div>`;
+  const box=el("div","hexbox");
+  const rows=hexBytes(1998);
+  let html="";
+  rows.forEach((bytes,i)=>{
+    let cls=(i%7===0)?"dim":"";
+    html+=hexLine(i*16,bytes,cls)+"\n";
+  });
+  // 尾部异常
+  const tail=[
+    {off:0x0400, bytes:textToBytes(">>> SEGMENT: TAIL "), cls:"dim"},
+    {off:0x0410, bytes:textToBytes("  KEY=B7K2      "), cls:"hot"},
+    {off:0x0420, bytes:textToBytes("  PATH:/vault/b7"), cls:"hot"},
+    {off:0x0430, bytes:textToBytes(">>> EOF          "), cls:"dim"}
+  ];
+  b.appendChild(box);
+  const goOff=b.querySelector("#goOff"), btnGo=b.querySelector("#btnGoOff"), btnTail=b.querySelector("#btnTail"), goMsg=b.querySelector("#goMsg");
+  function jumpTo(off){
+    const sp=box.querySelector(`span[data-off="${off}"]`);
+    if(!sp){ goMsg.textContent="这个地址不在转储范围内（0x0000—0x0440）。"; goMsg.className="msg e"; SND.err(); return }
+    sp.scrollIntoView({block:"center",behavior:"smooth"});
+    goMsg.textContent="已定位到 0x"+off.toString(16).toUpperCase().padStart(4,"0"); goMsg.className="msg"; SND.tick();
+  }
+  btnGo.addEventListener("click",()=>{
+    const raw=goOff.value.trim().replace(/^0x/i,"");
+    if(!/^[0-9a-fA-F]{1,4}$/.test(raw)){ goMsg.textContent="地址应为十六进制，例如 0400。"; goMsg.className="msg e"; SND.err(); return }
+    jumpTo(parseInt(raw,16));
+  });
+  btnTail.addEventListener("click",()=>jumpTo(0x0400));
+  tail.forEach(t=>{ html+=hexLine(t.off,t.bytes,t.cls)+"\n" });
+  html+=hexLine(0x0440,textToBytes("        0x00 END"),"dim");
+  box.innerHTML=html;
+  const tv=el("div","tailview");
+  tv.innerHTML=`<div class="tvh">TAIL VIEW · 越界数据（不属于图像协议）</div>
+    <div class="tvl">&gt;&gt;&gt; SEGMENT: TAIL</div>
+    <div class="tvl hl">KEY=B7K2</div>
+    <div class="tvl hl">PATH: /vault/b7</div>
+    <div class="tvl">&gt;&gt;&gt; EOF</div>`;
+  box.appendChild(tv);
+  b.appendChild(el("div","","")).style.marginTop="6px";
+  const tip=el("div"); tip.style.cssText="font-size:12px;color:var(--tx3);margin-top:8px";
+  tip.innerHTML='读法：ASCII 列里多是点号，只有真正的文本才显形；点左边任意一行可以标记它。';
+  b.appendChild(tip);
+
+  // 越界起点标记（互动）
+  let selOff=-1;
+  const selLine=el("div");
+  selLine.style.cssText="font-family:var(--mono);font-size:11px;color:var(--tx3);margin-top:6px;letter-spacing:1px";
+  selLine.textContent="越界起点：未标记";
+  box.addEventListener("click",e=>{
+    const t=e.target; const sp=(t&&t.closest)?t.closest("span[data-off]"):null;
+    if(!sp) return;
+    box.querySelectorAll("span.sel").forEach(x=>x.classList.remove("sel"));
+    sp.classList.add("sel");
+    selOff=+sp.dataset.off;
+    SND.tick();
+    selLine.textContent="越界起点："+selOff.toString(16).toUpperCase().padStart(4,"0")+"（再点别处可改）";
+    selLine.style.color="var(--cy)";
+  });
+  b.appendChild(selLine);
+
+  // 路径输入
+  b.appendChild(el("div","sub","挂载隐藏目录"));
+  const row=el("div","row");
+  const pin=document.createElement("input"); pin.type="text"; pin.placeholder="/vault/____"; pin.style.width="210px"; pin.maxLength=24;
+  const pbtn=el("button","btn go","打开路径");
+  const pmsg=el("div","msg"); pmsg.style.flexBasis="100%";
+  row.appendChild(pin); row.appendChild(pbtn); row.appendChild(pmsg);
+  b.appendChild(row);
+  if(S.hidden){
+    pin.disabled=true; pbtn.disabled=true;
+    pmsg.textContent="已挂载 /vault/b7：其中有一件未登记的私人物。"; pmsg.className="msg s";
+  }
+  pbtn.addEventListener("click",()=>{
+    const v=pin.value.trim().toLowerCase().replace(/^https?:\/\/[^/]*/,"").replace(/ /g,"");
+    if(!S.hidden && selOff!==0x0400){
+      pmsg.textContent=selOff<0
+        ? "先标出越界起点：在地址列里点一下图像数据结束、尾巴开始的那一行。"
+        : "起点标错了：0x"+selOff.toString(16).toUpperCase().padStart(4,"0")+" 还是原图像的字节。"; 
+      pmsg.className="msg e"; return;
+    }
+    if(v==="/vault/b7" || v==="vault/b7"){
+      pmsg.textContent="挂载成功。档案柜里多了一件没有编号的东西。"; pmsg.className="msg s";
+      solve("R3",{keys:{pk:"B7K2"},hidden:true,note:"封存包尾部读出的密钥 B7K2；同时挂载了未登记的目录 /vault/b7。"});
+      pin.disabled=true; pbtn.disabled=true;
+      renderRail();
+      const res=el("div","done-strip");
+      res.innerHTML=`<div class="k">RECOVERED</div><div><div class="v">解析密钥 B7K2 · 隐藏目录 /vault/b7 已挂载</div>
+        <div class="k" style="margin-top:3px">档案柜中出现了「03-B 黑匣子」</div></div>`;
+      b.appendChild(res);
+      const go=el("div","navfoot"); const r2=el("div");
+      const bb=el("button","btn go","打开 03-B 黑匣子 ›");
+      bb.addEventListener("click",()=>open(-2));
+      r2.appendChild(bb); go.appendChild(el("div","")); go.appendChild(r2); b.appendChild(go);
+    }else{
+      pmsg.textContent="路径不存在。ASCII 列里的那一行是完整的挂载点。"; pmsg.className="msg e";
+      pin.classList.add("bad"); setTimeout(()=>pin.classList.remove("bad"),350);
+    }
+  });
+  p.appendChild(b); st.appendChild(p);
+};
+
+/* ================= 档案 03-B：黑匣子 ================= */
+M_crate=function(st){
+  const p=el("div","panel");
+  p.appendChild(shellHead("UNREGISTERED · 03-B","黑匣子","不在清单里 / 封条日期 1998.11.07 / 打开后不可撤销"));
+  const hv=hero("crate",["UNREGISTERED · 03-B","SEAL DATE 1998.11.07"]);
+  p.appendChild(hv);
+  lampAt(hv,"R3B",{left:"16px",bottom:"40px"});
+  const b=el("div","body");
+  b.innerHTML=`<p class="lede">封条很旧，胶已经脆了。里面不是硬件，是一叠手写纸和一张折起来的打印件。</p>`;
+  const term=el("div","term");
+  term.innerHTML=`
+    <div class="k">// 手写纸 · 第一页</div>
+    给后来的人：<br>
+    如果你读到这里，说明清算组终于来了。这家档案馆四十一年的电费，是有人用一个小账户一年一年续的。<br>
+    账户名是一个女孩的名字。她今年应该也四十一岁了。<br><br>
+    <div class="k">// 第二页 · 技术备注（给不懂行的审计员）</div>
+    一、值班录音里报的机柜号就是 <b>07</b>，不用再猜。<br>
+    二、塔上的呼号记在<b>上半频段</b>，按旧制<b>自右向左</b>读，四个字母。<br>
+    三、归航靠<b>三颗等距的星</b>。把环上的三枚白点对准它们，读<b>正对顶端</b>的那一格刻度，三位数。<br>
+    四、第六号配线盘管的是发射授权。A 进 1、B 进 2、C 进 3 是出厂状态，那晚我把它改过。<br><br>
+    <div class="k">// 第三页 · 只有一行</div>
+    灯别关。她说她怕黑，怕黑的时候看不见回家的路。`;
+  b.appendChild(term);
+  b.appendChild(el("div","sub","已记入终端日志"));
+  const nb=el("div"); nb.style.cssText="font-size:12.5px;color:#a9c9d6;line-height:1.9";
+  nb.innerHTML=`· 呼号读取规则：上半频段，自右向左，四个字母<br>
+    · 星图规则：三枚白点对准三颗等距星，读顶端刻度<br>
+    · 配线盘出厂状态：A→1、B→2、C→3，当晚被改动过`;
+  b.appendChild(nb);
+  if(!S.done[HID.id]){
+    const d=el("div","done-strip");
+    d.innerHTML=`<div class="k">NOTE</div><div><div class="v">这份私人物已抄录进日志。可以继续核对剩下三份记录。</div></div>`;
+    b.appendChild(d);
+    solve(HID.id,{note:"黑匣子：电费由一个女孩的小账户续了四十一年；技术备注已抄录（呼号读法、星图读法、配线盘状态）。"});
+  }
+  const go=el("div","navfoot"); const r=el("div");
+  const bb=el("button","btn go","继续：塔的呼吸 ›"); bb.addEventListener("click",()=>open(3));
+  r.appendChild(bb); go.appendChild(el("div","")); go.appendChild(r); b.appendChild(go);
+  p.appendChild(b); st.appendChild(p);
+};
+
+/* ================= 档案 04：塔的呼吸（频谱） ================= */
+M.R4=function(st){
+  const p=el("div","panel");
+  p.appendChild(shellHead("RECORD 04 · 塔的呼吸","上行链路 / 12.4 kHz 带宽","频谱记录 / 41 秒循环 / 天线已停转，缓存里还留着最后一圈"));
+  const hv=hero("spec",["UPLINK 12.4 kHz · 41 s LOOP","TUNE 40.00 — 42.00 kHz"]);
+  p.appendChild(hv);
+  lampAt(hv,"R4",{left:"16px",bottom:"40px"});
+  const b=el("div","body");
+  b.innerHTML=`<p class="lede">塔在向下发送一段很短的呼号，一直重复。噪声压得很低，
+    <b>四个旋钮都要对</b>：把<b>增益</b>拉起来、把<b>频段窗</b>抬到上半频段、把<b>接收带宽</b>收到 4 kHz 以内，再用<b>调谐</b>扫出那条载波——<br>
+    带宽太宽，四个字母会糊成一片；只有载波也对上，它们才会从噪声里浮出来。<br>
+    <span style="color:var(--am);font-size:12.5px">旧制读法：自右向左。字母的先后是右、左，不是左、右。</span><br>
+    <span style="color:var(--tx3);font-size:12.5px">也可以用耳朵：打开监听，越接近载波，底下的嗡鸣越低、越稳。</span></p>`;
+
+  const box=el("div","specbox");
+  const cvs=document.createElement("canvas"); cvs.width=720; cvs.height=340;
+  cvs.style.width="100%"; cvs.style.height="auto";
+  box.appendChild(cvs);
+  b.appendChild(box);
+
+  const ctrl=el("div"); ctrl.style.cssText="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:10px";
+  ctrl.innerHTML=`
+    <label class="slider"><span class="lb"><span>增益</span><b id="vG">18</b></span>
+      <input type="range" id="sG" min="0" max="100" step="1" value="18"></label>
+    <label class="slider"><span class="lb"><span>频段窗</span><b id="vB">206</b></span>
+      <input type="range" id="sB" min="40" max="300" step="1" value="206"></label>
+    <label class="slider"><span class="lb"><span>接收带宽</span><b id="vW">8.0</b></span>
+      <input type="range" id="sW" min="1" max="8" step="0.5" value="8"></label>
+    <label class="slider" style="grid-column:1/-1"><span class="lb"><span>调谐（扫频找载波）</span><b id="vT">40.000</b></span>
+      <input type="range" id="sT" min="40" max="42" step="0.01" value="40"></label>`;
+  b.appendChild(ctrl);
+
+  let gain=18, band=206, bw=8, tune=40, listen=true, lockedOnce=false;
+  function tv2(){ return Math.max(0,Math.min(1,1-Math.abs(tune-41.02)/0.10)) }
+  function updTone(){
+    if(!listen){ auTone(0,0); return }
+    const d=Math.abs(tune-41.02);
+    const f=240+Math.min(1800,d*950);
+    const tvv=tv2();
+    auTone(f,0.0035+tvv*0.028);
+    if(tvv>0.92 && !lockedOnce){ lockedOnce=true; SND.chime(); toast("载波锁定 · 41.02 kHz") }
+    if(tvv<=0.92) lockedOnce=false;
+  }
+  function draw(){
+    const g=cvs.getContext("2d"); if(!g) return;
+    g.clearRect(0,0,720,340);
+    g.fillStyle="#03060a"; g.fillRect(0,0,720,340);
+    g.strokeStyle="rgba(45,106,128,.40)"; g.lineWidth=1;
+    for(let x=0;x<=720;x+=48){ g.beginPath(); g.moveTo(x+.5,0); g.lineTo(x+.5,340); g.stroke() }
+    for(let y=0;y<=340;y+=34){ g.beginPath(); g.moveTo(0,y+.5); g.lineTo(720,y+.5); g.stroke() }
+    const r=rng(7919);
+    const na=(0.05+(100-gain)/100*0.38);
+    for(let i=0;i<280;i++){
+      const x=r()*720, y=r()*340, w=1+r()*6, h=1+r()*3;
+      g.fillStyle=`rgba(${y<170?124:89},${y<170?240:184},${y<170?192:255},${na.toFixed(3)})`;
+      g.fillRect(x,y,w,h);
+    }
+    const gv=Math.max(0,Math.min(1,(gain-52)/28));
+    const tv=Math.max(0,Math.min(1,1-Math.abs(tune-41.02)/0.10));
+    const bv=(bw<=4.2)?1:0.55-(bw-4.2)*0.06;
+    const vis=gv*tv*bv;
+    const crisp=(bw<=4.2);
+    // 载波峰线
+    g.strokeStyle=`rgba(255,206,106,${(0.05+vis*0.5).toFixed(2)})`; g.lineWidth=1;
+    g.beginPath(); g.moveTo(0,168.5); g.lineTo(720,168.5); g.stroke();
+    g.font="bold 64px ui-monospace,Menlo,Consolas,monospace";
+    g.textBaseline="middle"; g.textAlign="left";
+    if(vis>0.02){
+      ["E","T","I","K"].forEach((ch,i)=>{
+        const x=150+i*140;
+        if(crisp){
+          g.save();
+          g.globalAlpha=0.12+vis*0.88;
+          g.shadowColor="#7cf0c0"; g.shadowBlur=20;
+          g.fillStyle="#b9ffe6"; g.fillText(ch,x,120);
+          g.restore();
+        }else{
+          // 带宽太宽：同一组字母被糊成一片
+          const sp=Math.min(9,(bw-4)*2.2);
+          for(let k=0;k<5;k++){
+            g.save();
+            g.globalAlpha=(0.10+vis*0.5)*0.4;
+            g.shadowColor="#7cf0c0"; g.shadowBlur=26;
+            g.fillStyle="#b9ffe6";
+            g.fillText(ch,x+(k-2)*sp,120+(k%2?2:-2));
+            g.restore();
+          }
+        }
+      });
+    }
+    const bt=Math.max(0,band-34), bb=Math.min(340,band+34);
+    g.fillStyle="rgba(3,7,11,.88)";
+    g.fillRect(0,0,720,bt); g.fillRect(0,bb,720,340-bb);
+    g.strokeStyle="rgba(255,206,106,.6)"; g.lineWidth=1;
+    g.beginPath(); g.moveTo(0,bt+.5); g.lineTo(720,bt+.5); g.stroke();
+    g.beginPath(); g.moveTo(0,bb+.5); g.lineTo(720,bb+.5); g.stroke();
+    g.font="9px ui-monospace,monospace"; g.fillStyle="#4e8f7c"; g.textAlign="left";
+    g.fillText("GAIN "+gain,10,18); g.textAlign="right"; g.fillText("BAND "+band+" / BW "+bw.toFixed(1)+"k  ",710,18);
+    g.textAlign="left"; g.fillStyle="rgba(255,206,106,.85)"; g.fillText("TUNE "+tune.toFixed(3)+" kHz",10,332);
+    g.textAlign="right";
+    const ok=(tv>0.85&&gv>0.7&&crisp);
+    g.fillStyle=ok?"#7cf0c0":"#c9695f";
+    g.fillText(ok?"CARRIER: LOCKED":(tv>0.85&&gv>0.7?"BAND TOO WIDE":"CARRIER: NO LOCK  "),710,332);
+    g.fillStyle="#3d5f6b"; g.textAlign="left"; g.fillText("UPPER",10,bt-6); g.fillText("LOWER",10,bb+14);
+  }
+  draw();
+  const sg=ctrl.querySelector("#sG"), sb=ctrl.querySelector("#sB"), stn=ctrl.querySelector("#sT");
+  const sw=ctrl.querySelector("#sW");
+  const vg=ctrl.querySelector("#vG"), vb=ctrl.querySelector("#vB"), vt=ctrl.querySelector("#vT"), vw=ctrl.querySelector("#vW");
+  if(S.done.R4){ bw=3; sw.value="3"; vw.textContent="3.0"; draw(); }
+  sg.addEventListener("input",e=>{ gain=+e.target.value; vg.textContent=gain; draw() });
+  sb.addEventListener("input",e=>{ band=+e.target.value; vb.textContent=band; draw(); SND.tick() });
+  sw.addEventListener("input",e=>{ bw=+e.target.value; vw.textContent=bw.toFixed(1); draw(); SND.tick() });
+  stn.addEventListener("input",e=>{ tune=+e.target.value; vt.textContent=tune.toFixed(3); draw(); auWake(); updTone() });
+  const lrow=el("div","row"); lrow.style.marginTop="8px";
+  const lb=el("button","btn sm on","监听 · 开");
+  lb.addEventListener("click",()=>{ auWake(); listen=!listen; lb.classList.toggle("on",listen);
+    lb.textContent=listen?"监听 · 开":"监听 · 关"; if(!listen) auTone(0,0); else {lu();} });
+  function lu(){ if(listen) updTone() }
+  const lhint=el("div","msg"); lhint.style.flexBasis="100%"; lhint.textContent="嗡鸣越低、越稳，说明离载波越近。";
+  lrow.appendChild(lb); lrow.appendChild(lhint);
+  b.appendChild(lrow);
+
+  b.appendChild(el("div","sub","录入呼号（四字母）"));
+  const row=el("div","row");
+  const cin=document.createElement("input"); cin.type="text"; cin.maxLength=6; cin.placeholder="____"; cin.style.width="130px";
+  cin.style.textTransform="uppercase"; cin.style.letterSpacing="8px";
+  const cbtn=el("button","btn go","写入");
+  const cmsg=el("div","msg"); cmsg.style.flexBasis="100%";
+  row.appendChild(cin); row.appendChild(cbtn); row.appendChild(cmsg); b.appendChild(row);
+  if(S.done.R4){ cin.disabled=true; cbtn.disabled=true; cmsg.textContent="已归档：旧呼号 KITE。"; cmsg.className="msg s"; }
+  cbtn.addEventListener("click",()=>{
+    const v=cin.value.trim().toUpperCase().replace(/\s/g,"");
+    if(v==="KITE" && bw>4.2){
+      cmsg.textContent="先别写：带宽还开着，字母糊在一起，现在写进去只是猜。把接收带宽收窄到 4 kHz 以内。"; cmsg.className="msg e";
+      return;
+    }
+    if(v==="KITE"){
+      cmsg.textContent="呼号确认：KITE。这条链路 41 年没有换过呼号。"; cmsg.className="msg s";
+      cin.disabled=true; cbtn.disabled=true;
+      solve("R4",{keys:{call:"KITE"},note:"塔的呼号是 KITE（上半频段，自右向左读）；41 年来一直在循环同一条链路。"});
+      const d=el("div","done-strip");
+      d.innerHTML=`<div class="k">CALLSIGN</div><div><div class="v">KITE — 四个字母，41 年未改。</div>
+        <div class="k" style="margin-top:3px">旧呼号 = KITE</div></div>`;
+      b.appendChild(d);
+      b.appendChild(footNav(3,()=>open(4),"下一份：归航星图 ›"));
+    }else{
+      cmsg.textContent="与频谱记录不一致。注意：读法自右向左。"; cmsg.className="msg e";
+      cin.classList.add("bad"); setTimeout(()=>cin.classList.remove("bad"),350);
+    }
+  });
+  p.appendChild(b); st.appendChild(p);
+};
+
+/* ================= 档案 05：归航星图 ================= */
+M.R5=function(st){
+  const p=el("div","panel");
+  p.appendChild(shellHead("RECORD 05 · 归航星图","NAV / 静默轨道 · 三颗等距星","星图盘 / 外环可旋转 15° 一格 / 内圈为旧航路标记"));
+  const hv=hero("star",["NAV PLATE · 24 TICKS","RING 15° / STEP"]);
+  p.appendChild(hv);
+  lampAt(hv,"R5",{right:"18px",bottom:"40px"});
+  const b=el("div","body");
+  b.innerHTML=`<p class="lede">外环是一块可以转的铜盘。环上有三枚白点，
+    内圈有三颗很亮的星——它们等距分布。<br>
+    把三枚白点<b>各自对准</b>一颗星，读出环上<b>正对顶端刻度</b>的那一格数字，再把它登记进方位栏。</p>`;
+
+  const W=720,H=400,CX=360,CY=200,R=150;
+  const stg=el("div","starbox");
+  const r=rng(5150);
+  let stars="";
+  for(let i=0;i<130;i++){
+    const x=r()*W, y=r()*H, s=.6+r()*1.5, o=.15+r()*.55;
+    stars+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${s.toFixed(1)}" fill="#cfe6f2" opacity="${o.toFixed(2)}"/>`;
+  }
+  function pol(a,rad){ const t=a*Math.PI/180; return [CX+Math.cos(t)*rad, CY+Math.sin(t)*rad] }
+  const targets=[30,150,270].map((a,i)=>{const [x,y]=pol(a,R); return {a,x,y,rad:[92,78,88][i]}});
+  const LBL=["041","004","317","128","266","074","199","302","055","238","011","287",
+             "166","093","254","338","017","121","276","213","149","231","319","068"];
+  let ring="";
+  for(let i=0;i<24;i++){
+    const a=i*15; const [x1,y1]=pol(a,R+4); const [x2,y2]=pol(a,R+14);
+    ring+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#2d6a80" stroke-width="1"/>`;
+    const [tx,ty]=pol(a,R+30);
+    ring+=`<g transform="translate(${tx},${ty}) rotate(${a+90})"><text text-anchor="middle" font-family="monospace" font-size="8.5" fill="#59b8ff" opacity=".85">${LBL[i]}</text></g>`;
+  }
+  [45,165,285].forEach(a=>{ const [x,y]=pol(a,R); ring+=`<circle cx="${x}" cy="${y}" r="7.5" fill="#7cf0c0" opacity=".16"/><circle cx="${x}" cy="${y}" r="3.4" fill="#b6fff0" stroke="#7cf0c0" stroke-width="1"/>` });
+
+  stg.innerHTML=`<svg viewBox="0 0 ${W} ${H}" id="ssvg">
+    <rect width="${W}" height="${H}" fill="#03060b"/>
+    ${stars}
+    <circle cx="${CX}" cy="${CY}" r="${R+22}" fill="none" stroke="#1e4a5c" stroke-width="1"/>
+    <circle cx="${CX}" cy="${CY}" r="${R-18}" fill="none" stroke="#123243" stroke-width=".8" stroke-dasharray="4 6"/>
+    ${targets.map(t=>`<g><circle cx="${t.x}" cy="${t.y}" r="${t.rad*0.45}" fill="#ffd79a" opacity=".05"/>
+      <circle cx="${t.x}" cy="${t.y}" r="8" fill="#ffd79a" opacity=".22"/>
+      <path d="M${t.x-11},${t.y} H${t.x+11} M${t.x},${t.y-11} V${t.y+11}" stroke="#ffcf8f" stroke-width="1.4" opacity=".7"/>
+      <circle cx="${t.x}" cy="${t.y}" r="2.2" fill="#fff6e0"/></g>`).join("")}
+    <g id="sring" transform="rotate(0 ${CX} ${CY})">${ring}</g>
+    <line x1="${CX}" y1="${CY-176}" x2="${CX}" y2="${CY-160}" stroke="#ffce6a" stroke-width="2"/>
+    <text x="${CX}" y="${CY-186}" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffce6a">TOP</text>
+  </svg>`;
+  b.appendChild(stg);
+
+  let ang=60, acc=null, wasAligned=false;
+  const RING=stg.querySelector("#sring");
+  const readout=el("div"); readout.style.cssText="font-family:var(--mono);font-size:12px;color:var(--cy);margin-top:8px;letter-spacing:1px";
+  const row=el("div","row"); row.style.marginTop="10px";
+  const prev=el("button","btn sm","‹ 逆时针 15°"), nxt=el("button","btn sm","顺时针 15° ›");
+  const msg=el("div","msg"); msg.style.flexBasis="100%";
+
+  // 登记方位（读出来还要写进去）
+  const cw=el("div"); cw.style.cssText="margin-top:12px;display:none";
+  cw.appendChild(el("div","sub","登记归航方位（三位）"));
+  const crow=el("div","row");
+  const ain=document.createElement("input"); ain.type="text"; ain.maxLength=4; ain.placeholder="___";
+  ain.style.width="110px"; ain.style.letterSpacing="8px"; ain.style.textAlign="center";
+  const abtn=el("button","btn go","登记方位");
+  const amsg=el("div","msg"); amsg.style.flexBasis="100%";
+  crow.appendChild(ain); crow.appendChild(abtn); crow.appendChild(amsg);
+  cw.appendChild(crow);
+  let registered=!!S.done.R5;
+  abtn.addEventListener("click",()=>{
+    if(registered) return;
+    const v=ain.value.trim().replace(/[^0-9]/g,"");
+    if(v!=="213"){ amsg.textContent="与环上的刻度不符：核对 TOP 指针正对的那一格。"; amsg.className="msg e"; ain.classList.add("bad"); setTimeout(()=>ain.classList.remove("bad"),350); return }
+    registered=true;
+    amsg.textContent="方位已登记：213。档案柜在等这个数。"; amsg.className="msg s";
+    ain.disabled=true; abtn.disabled=true;
+    solve("R5",{keys:{az:"213"},note:"星图环对齐后，顶端刻度读出归航方位 213。"});
+    const d=el("div","done-strip");
+    d.innerHTML=`<div class="k">AZIMUTH</div><div><div class="v">归航方位 213 — 三点共线，环停在这一格。</div>
+      <div class="k" style="margin-top:3px">归航方位 = 213</div></div>`;
+    b.appendChild(d);
+    b.appendChild(footNav(4,()=>open(5),"下一份：配线盘 ›"));
+  });
+
+  function setAng(v){
+    ang=((v%360)+360)%360;
+    RING.setAttribute("transform",`rotate(${ang} ${CX} ${CY})`);
+    const idx=(((18-(ang/15))%24)+24)%24;
+    const aligned = ang===345;
+    if(aligned && !wasAligned){ SND.chime() } else if(!aligned) SND.tick();
+    wasAligned=aligned;
+    readout.textContent=`环角 ${String(ang).padStart(3,"0")}° · 顶端刻度 ${LBL[Math.round(idx)]}${aligned?" · 已对齐":""}`;
+    readout.style.color=aligned?"var(--ph)":"var(--cy)";
+    if(aligned){
+      if(registered){
+        msg.textContent="已归档：归航方位 213。环可以继续转，但数字已经记下了。";
+        msg.className="msg s";
+      }else{
+        msg.textContent="三枚白点与三颗等距星重合。现在读 TOP 指针正对的那一格刻度，写进下面的方位栏。";
+        msg.className="msg s";
+        cw.style.display="block";
+      }
+    }else if(!registered){
+      cw.style.display="none";
+      msg.textContent="尚未对齐：三枚白点还没有同时压住三颗星。"; msg.className="msg";
+    }
+  }
+  prev.addEventListener("click",()=>setAng(ang-15));
+  nxt.addEventListener("click",()=>setAng(ang+15));
+  row.appendChild(prev); row.appendChild(nxt);
+  b.appendChild(row); b.appendChild(readout); b.appendChild(msg);
+  if(!S.done.R5){ b.appendChild(cw) }
+  else{
+    const d=el("div","done-strip");
+    d.innerHTML=`<div class="k">AZIMUTH</div><div><div class="v">归航方位 213 — 已登记，无需重读。</div></div>`;
+    b.appendChild(d); b.appendChild(footNav(4,()=>open(5),"下一份：配线盘 ›"));
+  }
+
+  // 拖动
+  let dragX=null, dragA=0;
+  stg.addEventListener("pointerdown",e=>{ dragX=e.clientX; dragA=ang });
+  stg.addEventListener("pointermove",e=>{
+    if(dragX==null) return;
+    const dx=e.clientX-dragX;
+    if(Math.abs(dx)>18){ setAng(dragA + (dx>0?15:-15)); dragA=ang; dragX=e.clientX }
+  });
+  stg.addEventListener("pointerup",()=>dragX=null);
+  stg.addEventListener("pointerleave",()=>dragX=null);
+  setAng(ang);
+
+  p.appendChild(b); st.appendChild(p);
+};
+
+/* ================= 档案 06：配线盘 ================= */
+M.R6=function(st){
+  const p=el("div","panel");
+  p.appendChild(shellHead("RECORD 06 · 配线盘","SIGNAL ROUTER / BAY 07","四道闸门 / 每道可切直通或交叉 / 出厂状态：全直通"));
+  const hv=hero("patch",["SIGNAL ROUTER · BAY 07","4 GATES × 2 ROUTES"]);
+  p.appendChild(hv);
+  lampAt(hv,"R6",{right:"18px",top:"18px"});
+  const b=el("div","body");
+  b.innerHTML=`<p class="lede">发射授权走这块配线盘。出厂时 A→1、B→2、C→3 直连；
+    那晚值班的人把它改成了另一套走法。<br>
+    目标：<b>A 走 2、B 走 3、C 走 1</b>。点闸门切换「直通／交叉」，让三条线各自走到位。</p>`;
+
+  const gates=[false,false,false,false];
+  if(S.done.R6){ gates[1]=true; gates[2]=true; }
+  const portY=[60,146,232], gateX=[146,236,326,416];
+  const COL=["#59b8ff","#7cf0c0","#ffce6a"], NM=["A","B","C"];
+
+  function perm(){
+    let o=[0,1,2];
+    gates.forEach((cross,i)=>{
+      if(!cross) return;
+      const a=(i%2===0)?0:1;
+      const t=o[a]; o[a]=o[a+1]; o[a+1]=t;
+    });
+    return o;
+  }
+  const GOAL=[2,0,1];
+  const isSolved=o=>o[0]===2 && o[1]===0 && o[2]===1;
+
+  const gWrap=el("div","patchbox");
+  const row=el("div","row"); row.style.cssText="margin-top:10px;gap:8px";
+  const legend=el("div"); legend.style.cssText="font-family:var(--mono);font-size:11px;color:var(--tx2);letter-spacing:1px;margin-top:8px";
+  const msg=el("div","msg");
+  const badge=el("div","badge no","AUTH: DENIED");
+
+  function track(input){
+    let q=input; const pts=[[54,portY[q]]];
+    gates.forEach((cross,i)=>{
+      const x=gateX[i];
+      pts.push([x-22,portY[q]]);
+      if(cross){
+        if(i%2===0){ q = q===0?1 : q===1?0 : 2 }
+        else { q = q===1?2 : q===2?1 : 0 }
+      }
+      pts.push([x+22,portY[q]]);
+    });
+    pts.push([596,portY[q]]);
+    return {q,pts};
+  }
+  function drawGates(){
+    row.innerHTML="";
+    gates.forEach((cross,i)=>{
+      const lv=el("div","lever");
+      lv.innerHTML=`<div class="gl">GATE 0${i+1}</div>
+        <div class="track"><div class="knob ${cross?'dn':'up'}"></div></div>
+        <div class="st ${cross?'on':'off'}">${cross?"交叉 X":"直通 ═"}</div>`;
+      lv.addEventListener("click",()=>{
+        if(S.done.R6) return;
+        gates[i]=!gates[i]; SND.relay(); refresh();
+      });
+      lv.addEventListener("mouseenter",()=>SND.hover());
+      row.appendChild(lv);
+    });
+  }
+  function refresh(){
+    drawGates();
+    const o=perm();
+    let paths="",legendTxt="";
+    for(let inp=0;inp<3;inp++){
+      const t=track(inp);
+      paths+=`<polyline points="${t.pts.map(q=>q.join(",")).join(" ")}" fill="none" stroke="${COL[inp]}" stroke-width="2.2" opacity=".92"/>
+        <circle cx="54" cy="60" r="0" fill="none"/>
+        <circle cx="${t.pts[0][0]}" cy="${t.pts[0][1]}" r="4" fill="${COL[inp]}"/>
+        <circle cx="596" cy="${portY[t.q]}" r="4" fill="${COL[inp]}"/>
+        <text x="574" y="${portY[t.q]+4}" text-anchor="middle" font-family="monospace" font-size="10" fill="${COL[inp]}" font-weight="bold">${NM[inp]}</text>`;
+      legendTxt+=`${NM[inp]}→${t.q+1}　`;
+    }
+    let gatesSvg="";
+    gateX.forEach((x,i)=>{
+      gatesSvg+=`<rect x="${x-34}" y="96" width="68" height="150" rx="2" fill="${gates[i]?'rgba(255,206,106,.07)':'rgba(124,240,192,.05)'}" stroke="${gates[i]?'rgba(255,206,106,.45)':'rgba(124,240,192,.35)'}"/>
+        <text x="${x}" y="112" text-anchor="middle" font-family="monospace" font-size="9" fill="#8ba3b2">G0${i+1}</text>
+        <text x="${x}" y="128" text-anchor="middle" font-family="monospace" font-size="10" fill="${gates[i]?'#ffce6a':'#7cf0c0'}">${gates[i]?'X':'═'}</text>`;
+    });
+    gWrap.innerHTML=`<svg viewBox="0 0 640 300" style="width:100%;height:auto;display:block">
+      <rect width="640" height="300" fill="#050b11"/>
+      <text x="16" y="22" font-family="monospace" font-size="9" fill="#4e8f7c">IN</text>
+      <text x="600" y="22" font-family="monospace" font-size="9" fill="#4e8f7c">OUT</text>
+      ${[0,1,2].map(i=>`<text x="34" y="${portY[i]+4}" font-family="monospace" font-size="10" fill="${COL[i]}">${NM[i]}</text>
+        <text x="616" y="${portY[i]+4}" font-family="monospace" font-size="10" fill="#5c7183">${i+1}</text>`).join("")}
+      ${gatesSvg}${paths}
+    </svg>`;
+    legend.textContent=legendTxt.trim();
+    badge.className="badge "+(isSolved(o)?"ok":"no");
+    badge.textContent=isSolved(o)?"AUTH: GRANTED":"AUTH: DENIED";
+  }
+  b.appendChild(gWrap); b.appendChild(row); b.appendChild(legend);
+  const srow=el("div","row"); srow.style.marginTop="10px";
+  const sbtn=el("button","btn go","提交授权");
+  srow.appendChild(sbtn); srow.appendChild(badge);
+  b.appendChild(srow); b.appendChild(msg);
+  refresh();
+  if(S.done.R6){
+    sbtn.disabled=true;
+    msg.textContent="已归档：A→2、B→3、C→1，授权保持开启。"; msg.className="msg s";
+    const d=el("div","done-strip");
+    d.innerHTML=`<div class="k">AUTH</div><div><div class="v">发射授权已开 · 结项终端不再拒绝发送。</div></div>`;
+    b.appendChild(d);
+    b.appendChild(footNav(5,()=>open(S.done.R6B?6:-4),S.done.R6B?"最后：结项终端 ›":"下一份：冷却回路 06-B ›"));
+  }
+
+  sbtn.addEventListener("click",()=>{
+    const o=perm();
+    if(!isSolved(o)){ msg.textContent="路由不符：目标是 A→2、B→3、C→1。再看一眼哪条线走岔了。"; msg.className="msg e"; return }
+    msg.textContent="三条链路已重排：A→2、B→3、C→1。发射授权已开。"; msg.className="msg s";
+    if(!S.done.R6){
+      solve("R6",{note:"配线盘重排为 A→2、B→3、C→1，发射授权已开。"});
+      const d=el("div","done-strip");
+      d.innerHTML=`<div class="k">AUTH</div><div><div class="v">发射授权已开。结项终端不再拒绝发送。</div>
+        <div class="k" style="margin-top:3px">第七号机柜 · 上行链路 · 已授权</div></div>`;
+      b.appendChild(d);
+      b.appendChild(footNav(5,()=>open(S.done.R6B?6:-4),S.done.R6B?"最后：结项终端 ›":"下一份：冷却回路 06-B ›"));
+      sbtn.disabled=true;
+    }
+  });
+  p.appendChild(b); st.appendChild(p);
+};
+
+/* 06-B：冷却回路剖面 */
+function artPipe(){
+  const W=720,H=262; const r=rng(6061);
+  let frost="";
+  for(let i=0;i<110;i++){
+    frost+=`<circle cx="${(24+r()*672).toFixed(1)}" cy="${(18+r()*226).toFixed(1)}" r="${(.35+r()*1.5).toFixed(2)}" fill="#c8ecff" opacity="${(.05+r()*.2).toFixed(2)}"/>`;
+  }
+  let gticks="";
+  for(let i=0;i<=28;i++){
+    const a=(-215+i*10)*Math.PI/180;
+    const x1=210+Math.cos(a)*40, y1=94+Math.sin(a)*40;
+    const x2=210+Math.cos(a)*(i%5===0?30:34), y2=94+Math.sin(a)*(i%5===0?30:34);
+    gticks+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#3f7f92" stroke-width="${i%5===0?1.5:.8}"/>`;
+  }
+  // 4×4 歧管示意
+  let mini="";
+  for(let rr=0;rr<4;rr++)for(let cc=0;cc<4;cc++){
+    const x=486+cc*34, y=52+rr*34;
+    mini+=`<rect x="${x}" y="${y}" width="24" height="24" rx="2" fill="#061219" stroke="#1f5566"/>`;
+    mini+=`<circle cx="${x+12}" cy="${y+12}" r="2.2" fill="#2f7f8f"/>`;
+    if(cc<3) mini+=`<line x1="${x+24}" y1="${y+12}" x2="${x+34}" y2="${y+12}" stroke="#1f5566" stroke-width="1"/>`;
+    if(rr<3) mini+=`<line x1="${x+12}" y1="${y+24}" x2="${x+12}" y2="${y+34}" stroke="#1f5566" stroke-width="1"/>`;
+  }
+  return svgWrap(`
+  <defs>
+    <radialGradient id="ppBg" cx="35%" cy="18%" r="80%"><stop offset="0" stop-color="#0a2029"/><stop offset="1" stop-color="#02070b"/></radialGradient>
+    <linearGradient id="ppPipe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1c5566"/><stop offset=".28" stop-color="#2f8fa3"/>
+      <stop offset=".55" stop-color="#12606f"/><stop offset="1" stop-color="#04181f"/></linearGradient>
+    <linearGradient id="ppGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7ff0c1" stop-opacity=".55"/><stop offset="1" stop-color="#7ff0c1" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="${W}" height="${H}" fill="url(#ppBg)"/>
+  ${frost}
+  <g font-family="monospace" font-size="8.5" fill="#4e8f7c">
+    <text x="26" y="26">COOLANT LOOP / 06-B MANIFOLD</text>
+    <text x="694" y="26" text-anchor="end">4×4 / 2 COOL NODES</text>
+  </g>
+  <g>
+    <circle cx="210" cy="94" r="46" fill="#04101a" stroke="#2d6a80" stroke-width="1.2"/>
+    <circle cx="210" cy="94" r="35" fill="none" stroke="#173d4a"/>
+    ${gticks}
+    <line x1="210" y1="94" x2="${(210+Math.cos(-52*Math.PI/180)*30).toFixed(1)}" y2="${(94+Math.sin(-52*Math.PI/180)*30).toFixed(1)}" stroke="#7ff0c1" stroke-width="1.8"/>
+    <circle cx="210" cy="94" r="3" fill="#7ff0c1"/>
+    <text x="210" y="150" text-anchor="middle" font-family="monospace" font-size="8" fill="#59b8ff">0.9 MPa</text>
+  </g>
+  <g>
+    <rect x="300" y="72" width="26" height="76" rx="3" fill="#0a2730" stroke="#2d6a80"/>
+    <circle cx="313" cy="110" r="9" fill="none" stroke="#ffcb6b" stroke-width="1.4"/>
+    <line x1="313" y1="110" x2="313" y2="103" stroke="#ffcb6b" stroke-width="1.4"/>
+    <text x="313" y="164" text-anchor="middle" font-family="monospace" font-size="7.5" fill="#5c8496">V-07</text>
+  </g>
+  <g>
+    <rect x="60" y="186" width="600" height="46" rx="23" fill="url(#ppPipe)"/>
+    <rect x="60" y="186" width="600" height="46" rx="23" fill="url(#ppGlow)" opacity=".5"/>
+    <line x1="70" y1="197" x2="650" y2="197" stroke="#9ff4d8" stroke-width="1.6" opacity=".45"/>
+    ${[120,210,300,390,480,570].map(x=>`<rect x="${x}" y="182" width="10" height="54" rx="2" fill="#062028" stroke="#255b6b"/>`).join("")}
+    <text x="76" y="215" font-family="monospace" font-size="8" fill="#0a2830">IN</text>
+    <text x="640" y="215" text-anchor="end" font-family="monospace" font-size="8" fill="#0a2830">OUT</text>
+  </g>
+  <g opacity=".92">${mini}</g>
+  <g font-family="monospace" font-size="7.5" fill="#3d6c7c">
+    <text x="486" y="206">MANIFOLD SCHEMATIC / 四路一回路</text>
+  </g>
+  <g stroke="#7ff0c1" stroke-width="1" opacity=".35">
+    <line x1="300" y1="186" x2="300" y2="148"/><line x1="60" y1="209" x2="34" y2="209"/>
+  </g>`,W+" "+H);
+}
+/* 06-B 冷却回路 */
+M.R6B=function(st){
+  const p=el("div","panel");
+  p.appendChild(shellHead("SUB RECORD · 06-B","冷却回路 / COOLANT LOOP","4×4 歧管 / 每格可转 90° / 两枚冷却节点必须同时在回路上"));
+  const hv=hero("pipe",["COOLANT LOOP · 06-B","4×4 MANIFOLD · 2 NODES"]);
+  p.appendChild(hv);
+  const b=el("div","body");
+  b.innerHTML=`<p class="lede">配线开完，冷却剂才敢往上走。这块歧管有 16 格，每格只能转 90°——
+    出厂时是散的，图上那些暗线就是散着的接头。<br>
+    把冷却剂从 <b>IN</b>（第二行左端）一路送到 <b>OUT</b>（第二行右端）。回路必须同时经过<b>两枚带环的冷却节点</b>，
+    否则压力会顶到 2.4 MPa，终端不给校验码。灰格焊死了，转不动。</p>`;
+
+  const COL=4, CELL=76, GAP=8, PAD=10;
+  const box=el("div","pipebox");
+  b.appendChild(box);
+  const gauge=el("div","gauge");
+  b.appendChild(gauge);
+  const sumBox=el("div","sumline"); sumBox.style.display="none"; b.appendChild(sumBox);
+
+  const CELLS=[
+    {b:3,r:0},          {b:5,r:1},        {b:3,r:3,node:true}, {b:3,r:2},
+    {b:3,r:1},          {b:3,r:0,lock:true}, {b:5,r:1},       {b:3,r:2},
+    {b:3,r:2},          {b:5,r:2,node:true}, {b:3,r:1},       {b:3,r:0},
+    {b:3,r:1},          {b:5,r:0,lock:true}, {b:3,r:3},       {b:5,r:1}
+  ];
+  const INIT=CELLS.map(c=>c.r);
+  const SOLVED=[0,0,1,2,2,0,0,0,0,1,3,0,1,0,3,1];
+  if(S.done.R6B) CELLS.forEach((c,i)=>{ c.r=SOLVED[i] });
+  const mask=c=>((c.b<<c.r)|(c.b>>(4-c.r)))&15;
+
+  function calc(){
+    const seen=new Set(), q=[];
+    if(mask(CELLS[4])&8){ seen.add(4); q.push(4) }
+    const dirs=[[-1,0,1],[0,1,2],[1,0,4],[0,-1,8]];
+    while(q.length){
+      const idx=q.pop(), r=Math.floor(idx/COL), c=idx%COL, m=mask(CELLS[idx]);
+      for(const [dr,dc,bit] of dirs){
+        if(!(m&bit)) continue;
+        const nr=r+dr, nc=c+dc; if(nr<0||nr>=COL||nc<0||nc>=COL) continue;
+        const ni=nr*COL+nc, opp=({1:4,2:8,4:1,8:2})[bit];
+        if(!(mask(CELLS[ni])&opp)) continue;
+        if(!seen.has(ni)){ seen.add(ni); q.push(ni) }
+      }
+    }
+    const out=seen.has(7)&&!!(mask(CELLS[7])&2);
+    const nodes=seen.has(2)&&seen.has(9);
+    return {seen,out,nodes,ok:out&&nodes};
+  }
+
+  const dirLine={1:[0,-1],2:[1,0],4:[0,1],8:[-1,0]};
+  function render(){
+    const gh=calc();
+    const W=PAD*2+COL*CELL+(COL-1)*GAP, H=W;
+    let cells="";
+    for(let i=0;i<COL*COL;i++){
+      const c=CELLS[i], r0=Math.floor(i/COL), c0=i%COL;
+      const x=PAD+c0*(CELL+GAP), y=PAD+r0*(CELL+GAP), m=mask(c), cx=x+CELL/2, cy=y+CELL/2;
+      const pw=gh.seen.has(i);
+      let pipes="";
+      for(const bit in dirLine){
+        if(!(m&+bit)) continue;
+        const [dx,dy]=dirLine[bit];
+        pipes+=`<line x1="${cx}" y1="${cy}" x2="${cx+dx*CELL/2}" y2="${cy+dy*CELL/2}" stroke="${pw?'#7ff0c1':'#2b6a7c'}" stroke-width="${pw?3.4:2.6}" opacity="${pw?.95:.55}" class="${pw?'pw':''}"/>`;
+      }
+      cells+=`<g class="cell${c.lock?' lock':''}" data-i="${i}">
+        <rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" rx="6" fill="${c.lock?'rgba(24,34,40,.55)':'rgba(7,18,25,.5)'}" stroke="${pw?'rgba(127,240,193,.75)':'rgba(45,106,128,.5)'}" stroke-width="${pw?1.6:1}"/>
+        <circle cx="${cx}" cy="${cy}" r="${pw?7:5}" fill="${pw?'rgba(127,240,193,.2)':'rgba(45,106,128,.18)'}" stroke="${pw?'#7ff0c1':'#2d6a80'}" stroke-width="1"/>
+        ${c.node?`<circle cx="${cx}" cy="${cy}" r="12" fill="none" stroke="${warn(c,gh)?'#ff9f93':'#ffcb6b'}" stroke-width="1.6" opacity=".9"/>
+          <circle cx="${cx}" cy="${cy}" r="15.5" fill="none" stroke="${warn(c,gh)?'#ff9f93':'#ffcb6b'}" stroke-width=".7" opacity=".45"/>`:""}
+        ${c.lock?`<path d="M${cx-9},${cy-2} h18 M${cx-6},${cy-6} l12,12 M${cx+6},${cy-6} l-12,12" stroke="#44606c" stroke-width="1.2"/>`:""}
+        ${pipes}
+      </g>`;
+    }
+    box.innerHTML=`<svg viewBox="0 0 ${W} ${H}">
+      <rect width="${W}" height="${H}" fill="none"/>
+      <text x="4" y="${PAD+(CELL+GAP)*1+CELL/2+3}" font-family="monospace" font-size="8" fill="#59b8ff">IN</text>
+      <text x="${W-4}" y="${PAD+(CELL+GAP)*1+CELL/2+3}" text-anchor="end" font-family="monospace" font-size="8" fill="#59b8ff">OUT</text>
+      ${cells}
+    </svg>`;
+    // 状态
+    gauge.className="gauge "+(gh.ok?"ok":"warn");
+    if(gh.ok){
+      gauge.innerHTML=`<span class="val">FLOW STABLE · 0.9 MPa</span><span class="note">两枚冷却节点都在回路上</span>`;
+      if(!S.done.R6B) finish(gh);
+    }else if(gh.out){
+      gauge.innerHTML=`<span class="val">PRESSURE 2.4 MPa · 超压</span><span class="note">回路绕过了冷却节点：至少有一枚在环外</span>`;
+    }else{
+      gauge.innerHTML=`<span class="val">LOOP OPEN · 0.0 MPa</span><span class="note">冷却剂还没走到 OUT</span>`;
+    }
+    box.querySelectorAll(".cell").forEach(g=>{
+      g.addEventListener("click",()=>{
+        const i=+g.dataset.i;
+        if(CELLS[i].lock){ SND.err(); pokeEgg("weld"); return }
+        if(S.done.R6B) return;
+        CELLS[i].r=(CELLS[i].r+1)%4; SND.relay(); render();
+      });
+    });
+  }
+  function warn(c,gh){ return c.node && !gh.ok }
+
+  function finish(gh){
+    const d=el("div","done-strip");
+    d.innerHTML=`<div class="k">CHECKSUM</div><div><div class="v">回路接通，流量计打印校验码 <b>0719</b>。</div>
+      <div class="k" style="margin-top:3px">流量校验码 = 0719</div></div>`;
+    b.appendChild(d);
+    sumBox.style.display="block";
+    sumBox.innerHTML=`CHECKSUM 0719 · LOOP CLOSED · COOLANT 0.9 MPa`;
+    const r2=el("div"); r2.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px";
+    const go=el("button","btn go","最后：结项终端 ›"); go.addEventListener("click",()=>open(6));
+    const tip=el("div","dim"); tip.style.cssText="flex-basis:100%;font-size:11px";
+    tip.textContent="侧栏可以回看其它档案；结项单需要这串校验码。";
+    r2.appendChild(go); r2.appendChild(tip); b.appendChild(r2);
+    solve("R6B",{keys:{sum:"0719"},note:"冷却回路接通（06-B），流量计打印校验码 0719。"});
+  }
+
+  const row=el("div","row"); row.style.marginTop="10px";
+  const reset=el("button","btn sm","复位歧管 ⟲");
+  const hint=el("div","dim"); hint.style.flexBasis="100%"; hint.textContent="点任意一格顺时针转 90°；灰格焊死。";
+  reset.addEventListener("click",()=>{ if(S.done.R6B) return; CELLS.forEach((c,i)=>{ c.r=INIT[i] }); SND.click(); render() });
+  row.appendChild(reset); row.appendChild(hint);
+  b.appendChild(row);
+  if(S.done.R6B){
+    reset.style.display="none";
+    sumBox.style.display="block";
+    sumBox.innerHTML=`CHECKSUM 0719 · LOOP CLOSED · COOLANT 0.9 MPa`;
+    const d=el("div","done-strip");
+    d.innerHTML=`<div class="k">CHECKSUM</div><div><div class="v">已归档：流量校验码 0719。</div></div>`;
+    b.appendChild(d);
+    const r2=el("div"); r2.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px";
+    const go=el("button","btn go","最后：结项终端 ›"); go.addEventListener("click",()=>open(6));
+    r2.appendChild(go); b.appendChild(r2);
+  }
+  render();
+  p.appendChild(b); st.appendChild(p);
+};
+
+/* ================= 档案 07：结项终端 ================= */
+M.R7=function(st){
+  const p=el("div","panel");
+  p.appendChild(shellHead("RECORD 07 · 结项终端","DECOMMISSION / 一次发送","再入窗口 04:11 / 发送机会仅一次 / 需五项一致 + 发射授权 + 回路校验"));
+  const hv=hero("end",["DECOMMISSION PROTOCOL 7","SEND ONCE · 04:11 WINDOW"]);
+  p.appendChild(hv);
+  lampAt(hv,"R7",{right:"18px",bottom:"40px"});
+  const b=el("div","body");
+  b.innerHTML=`<p class="lede">最后一步是把五条信息写进结项单：机柜号、封存年份、旧呼号、归航方位，以及冷却回路跑完后打印的校验码。
+    这五项来自五份不同的档案——现在它们要在同一行里对齐。</p>`;
+
+  const term=el("div","term");
+  function authLine(){
+    const a=S.done.R6
+      ? `<span style="color:var(--ph)">授权状态：GRANTED（配线盘 A→2 / B→3 / C→1）</span>`
+      : `<span style="color:var(--rd)">授权状态：DENIED —— 先去第六份档案完成配线</span>`;
+    const c=S.done.R6B
+      ? `<span style="color:var(--ph)">冷却回路：FLOW STABLE（校验码已入册）</span>`
+      : `<span style="color:var(--rd)">冷却回路：OPEN —— 先去 06-B 接通两枚冷却节点</span>`;
+    return a+"<br>"+c;
+  }
+  term.innerHTML=`<div class="k">DECOMMISSION PROTOCOL 7 · 长夜档案馆</div>
+    BAY ......... <span class="k">[ 机柜编号 / 2 位 ]</span><br>
+    SEALED ...... <span class="k">[ 封存年份 / 4 位 ]</span><br>
+    CALLSIGN .... <span class="k">[ 旧呼号 / 4 字母 ]</span><br>
+    AZIMUTH ..... <span class="k">[ 归航方位 / 3 位 ]</span><br>
+    CHECKSUM .... <span class="k">[ 流量校验码 / 4 位 ]</span><br><br>
+    <span id="authLineInner">${authLine()}</span>`;
+  b.appendChild(term);
+
+  const grid=el("div"); grid.style.cssText="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px";
+  function field(label,ph,w,mx){
+    const w2=el("div");
+    const l=el("div",""); l.style.cssText="font-family:var(--mono);font-size:10px;letter-spacing:1.6px;color:var(--tx3);margin-bottom:5px";
+    l.textContent=label;
+    const i=document.createElement("input"); i.type="text"; i.placeholder=ph; i.maxLength=mx; i.style.width="100%"; i.style.letterSpacing="4px";
+    w2.appendChild(l); w2.appendChild(i); grid.appendChild(w2);
+    return i;
+  }
+  const fBay=field("BAY / 机柜编号","──",null,3);
+  const fYear=field("SEALED / 封存年份","────",null,5);
+  const fCall=field("CALLSIGN / 旧呼号","----",null,6);
+  const fAz=field("AZIMUTH / 归航方位","───",null,4);
+  const fSum=field("CHECKSUM / 流量校验码","────",null,5);
+  fSum.parentElement.style.gridColumn="1/-1";
+  b.appendChild(grid);
+
+  const row=el("div","row"); row.style.marginTop="14px";
+  const send=el("button","btn go","① 预检");
+  const msg=el("div","msg"); msg.style.flexBasis="100%";
+  row.appendChild(send); row.appendChild(msg); b.appendChild(row);
+
+  const detail=el("div"); detail.style.marginTop="8px";
+  b.appendChild(detail);
+
+  let checked=false;
+  function vals(){ return [fBay.value.trim(),fYear.value.trim(),fCall.value.trim().toUpperCase(),fAz.value.trim(),fSum.value.trim()] }
+  if(S.done.R7){
+    [fBay,fYear,fCall,fAz,fSum].forEach((x,i)=>{ x.disabled=true; x.value=["07","1998","KITE","213","0719"][i] });
+    send.disabled=true; msg.textContent="已归档：结项单 04:11 发出，不可重发。"; msg.className="msg s";
+  }
+  send.addEventListener("click",()=>{
+    if(S.done.R7){ msg.textContent="这份档案已经归档，结项单不可重复发送。"; msg.className="msg"; return }
+    const [a,b2,c,d,e]=vals();
+    if(!S.done.R6){ msg.textContent="终端拒绝发送：发射授权未开（回档案 06 完成配线）。"; msg.className="msg e"; SND.err(); return }
+    if(!S.done.R6B){ msg.textContent="终端拒绝发送：冷却回路还开着（回 06-B 接通两枚冷却节点，取校验码）。"; msg.className="msg e"; SND.err(); return }
+    const bad=[];
+    if(a!=="07") bad.push("BAY");
+    if(b2!=="1998") bad.push("SEALED");
+    if(c!=="KITE") bad.push("CALLSIGN");
+    if(d!=="213") bad.push("AZIMUTH");
+    if(e!=="0719") bad.push("CHECKSUM");
+    if(bad.length){
+      msg.textContent=`校验失败：${bad.join(" / ")} 与档案不符（共 ${bad.length} 项）。`; msg.className="msg e";
+      SND.err();
+      detail.innerHTML=`<div style="font-size:12px;color:var(--tx3)">五项都能在终端日志里核对。缺哪一项，就回对应档案再看一眼。</div>`;
+      return;
+    }
+    checked=true;
+    msg.textContent="五项一致，授权已开。可以发送——只有一次机会。"; msg.className="msg s";
+    SND.chime();
+    send.textContent="② 发送（不可撤销）";
+    send.classList.add("go");
+    detail.innerHTML=`<div style="font-size:12.5px;color:var(--am);line-height:1.8">发送后，这段 41 年的循环会停止；再入窗口仍按原计划推进。<br>你确定要按下去吗？</div>`;
+    const confirmRow=el("div","row"); confirmRow.style.marginTop="10px";
+    const yes=el("button","btn go","确认发送");
+    const no=el("button","btn sm","再核对一遍");
+    confirmRow.appendChild(yes); confirmRow.appendChild(no);
+    detail.appendChild(confirmRow);
+    no.addEventListener("click",()=>{ detail.innerHTML=""; send.textContent="① 预检"; SND.click() });
+    yes.addEventListener("click",()=>{
+      if(S.done.R7) return;
+      [fBay,fYear,fCall,fAz,fSum].forEach(x=>x.disabled=true);
+      yes.disabled=true; no.disabled=true; send.disabled=true;
+      msg.textContent="发送中……链路正在把这一段四十一年的循环交出去。"; msg.className="msg";
+      transmitFx("TRANSMITTING",()=>{
+        solve("R7",{note:"结项单填写：BAY 07 / SEALED 1998 / CALLSIGN KITE / AZIMUTH 213 / CHECKSUM 0719。发送完成。"});
+        M_end(st);
+      });
+    });
+  });
+
+  p.appendChild(b); st.appendChild(p);
+};
+
+/* ================= 结局 ================= */
+function M_end(st){
+  st.innerHTML="";
+  const p=el("div","panel");
+  p.appendChild(shellHead("PROTOCOL COMPLETE · 04:11","结项单已签","第七号机柜 / 上行链路 / 发送记录 1 条"));
+  const hv=hero("end",["DECOMMISSION COMPLETE · 04:11:41","EARTH SIDE / RECEIVED"]);
+  hv.dataset.egg="earth";
+  hv.innerHTML=artEarth(); p.appendChild(hv);
+  const b=el("div","body");
+  const mins=S.t0?Math.max(1,Math.round((Date.now()-S.t0)/60000)):"—";
+  const lampN=S.lamps.length;
+  const hid=S.done["R3B"]?"已抄录":"未发现";
+  b.innerHTML=`
+    <p class="lede">信号停了。四十一年的循环，在第四十一年的第 41 秒断掉。</p>
+    <div class="term" style="margin-top:10px">
+      <div class="k">// 发送内容（解调后）</div>
+      「灯还亮着。」<br>
+      「第七号机柜，水冷排后面。等你回来。」<br><br>
+      <div class="k">// 地球侧回执 · 04:11:41</div>
+      RX ▸ 200 ms pulse ................ <span style="color:var(--ph)">RECEIVED</span><br>
+      <div class="k">// 备注</div>
+      这是四十一年来，这条链路上第一次收到回应。
+    </div>
+    <p class="lede" style="margin-top:16px">
+      你签下结项单。冷却剂在管道里退下去，机柜一盏一盏变暗。再入窗口还是原来的时间，档案会完整地送回地面——
+      包括那件不在清单上的东西。<br><br>
+      在备注栏里，你只写了一行：<b>「灯，再留一圈。」</b></p>
+
+    <div class="sub" style="margin-top:20px">本次审计 / AUDIT SUMMARY</div>
+    <div class="statgrid">
+      <div class="stat"><span class="n">${RECS.filter(r=>S.done[r.id]).length}/7</span><span class="l">归档记录</span><i class="bar" style="width:${(RECS.filter(r=>S.done[r.id]).length/7*100).toFixed(0)}%"></i></div>
+      <div class="stat"><span class="n">${lampN}/7</span><span class="l">点亮的灯</span><i class="bar am" style="width:${(lampN/7*100).toFixed(0)}%"></i></div>
+      <div class="stat"><span class="n">${mins}′</span><span class="l">本班时长</span><i class="bar cy" style="width:${Math.min(100,mins/60*100).toFixed(0)}%"></i></div>
+      <div class="stat"><span class="n">${hid}</span><span class="l">03-B 黑匣子</span><i class="bar am" style="width:${S.done["R3B"]?100:0}%"></i></div>
+    </div>`;
+
+  // 七盏灯全亮：额外一段
+  if(lampN>=7){
+    const bonus=el("div","term"); bonus.style.marginTop="18px";
+    bonus.innerHTML=`<div class="k">// 未编目的第 8 段（仅当七盏灯全亮时出现）</div>
+      交接日志的最后一句，没人写进结项单：<br>
+      「如果有人替我把灯都点亮了，那说明这一夜不算太长。」<br><br>
+      <div class="k">// 系统备注</div>
+      灯位记录：7/7 · 循环已终止 · 但机柜 07 的那盏灯，你没有关。`;
+    b.appendChild(bonus);
+  }else{
+    const tip=el("div","msg"); tip.style.marginTop="14px";
+    tip.textContent="档案柜里还有几处微光没有点亮：每份档案都藏着一盏灯，点亮它们会有另一段记录。";
+    b.appendChild(tip);
+  }
+
+  const d=el("div","done-strip"); d.style.marginTop="16px";
+  d.innerHTML=`<div class="k">END</div>
+    <div><div class="v">《长夜档案馆 · 第七号机柜》— 结项完成</div>
+    <div class="k" style="margin-top:3px">BAY 07 · 1998 · KITE · 213 · 0719${S.done["R3B"]?" · 黑匣子已抄录":""} · 灯 ${lampN}/7</div></div>`;
+  b.appendChild(d);
+
+  const row=el("div","row"); row.style.marginTop="18px";
+  const again=el("button","btn sm","重新审计");
+  again.addEventListener("click",()=>{
+    try{localStorage.removeItem(SAVE); localStorage.removeItem("ln_intro")}catch(e){}
+    S=blank(); renderRail(); S.cur=-3; renderNode(); M_cover(); toast("已重置，可重新开始");
+  });
+  const back=el("button","btn sm","回看档案柜");
+  back.addEventListener("click",()=>{ S.cur=6; save(); renderRail(); renderNode(); open(6) });
+  row.appendChild(again); row.appendChild(back);
+  b.appendChild(row);
+
+  const cr=el("div","credits");
+  cr.innerHTML=`LONG NIGHT ARCHIVE · 第七号机柜<br>
+    <span class="dim">剧本 / 谜题 / 程序化插图 / 程序化音频 · 单文件离线可运行</span><br>
+    <span class="dim">写给所有替别人留过一盏灯的人。</span>`;
+  b.appendChild(cr);
+  p.appendChild(b); st.appendChild(p);
+
+  const foot=el("div"); foot.style.cssText="margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--tx3);letter-spacing:1px;text-align:center";
+  foot.textContent="LONG NIGHT ARCHIVE // UPTIME RESET // AUDITOR-1";
+  st.appendChild(foot);
+  SND.ok();
+}
+
+/* MODULES_PLACEHOLDER */
+
+/* ================= 启动 ================= */
+function boot(){
+  renderRail();
+  if(!S.seen){ S.cur=-3; renderNode(); M_cover(); }
+  else if(S.cur===-3){ renderNode(); M_cover(); }
+  else if(S.cur===-4 && GATE.R6B()){ open(-4); }
+  else{ open(S.cur>=0?S.cur:(S.cur===-2?-2:0)); }
+  const ab=$("btnAudio");
+  if(ab){ ab.textContent=AU.on?"声 · 开":"声 · 关"; ab.classList.toggle("off",!AU.on);
+    ab.addEventListener("click",()=>{ auWake(); auMute(!AU.on); }) }
+  document.addEventListener("pointerdown",auWake,{once:true});
+  $("btnLog").addEventListener("click",()=>{ renderLog(); $("drawer").classList.add("open"); $("mask").classList.add("open") });
+  $("btnCloseLog").addEventListener("click",closeLog);
+  $("mask").addEventListener("click",closeLog);
+  $("bellClose").addEventListener("click",bellClose);
+  $("bellMask").addEventListener("click",bellClose);
+  $("btnRestart").addEventListener("click",()=>{
+    if(!confirm("清空全部归档进度，重新开始本次审计？")) return;
+    try{localStorage.removeItem(SAVE); localStorage.removeItem("ln_intro")}catch(e){}
+    S=blank(); renderRail(); renderNode(); S.cur=-3; M_cover(); toast("已重置");
+  });
+  runIntro();
+}
+function closeLog(){ $("drawer").classList.remove("open"); $("mask").classList.remove("open") }
+function renderLog(){
+  const kk=$("logKeys"); kk.innerHTML="";
+  const found=Object.keys(S.keys);
+  if(!found.length) kk.innerHTML='<div class="litem">尚无已解析的密钥。归档档案后会写入此处。</div>';
+  found.forEach(k=>{ const d=el("div","kitem");
+    d.innerHTML=`<div class="kk">${KEYS[k].k}</div><div class="kv">${esc(S.keys[k])}</div><div class="kn">${KEYS[k].n}</div>`;
+    kk.appendChild(d)});
+  const nn=$("logNotes"); nn.innerHTML="";
+  if(!S.notes.length) nn.innerHTML='<div class="litem">尚无记录。</div>';
+  S.notes.forEach(t=>{ const d=el("div","litem"); d.innerHTML=t; nn.appendChild(d) });
+  const eg=$("logEggs"); if(eg){ eg.innerHTML="";
+    const ec=$("eggCount"); if(ec) ec.textContent=S.eggs.length+"/"+Object.keys(EGG_DEFS).length;
+    if(!S.eggs.length) eg.innerHTML='<div class="litem">尚未发现彩蛋。它们藏在一些容易忽略的角落。</div>';
+    S.eggs.forEach(id=>{ const d=el("div","egg-row");
+      d.innerHTML=`<div class="ek">EGG · ${id.toUpperCase()}</div><div class="en">${EGG_DEFS[id].name} —— ${EGG_DEFS[id].n}</div>`;
+      eg.appendChild(d) });
+  }
+}
+boot();
+</script>
+</body>
+</html>
